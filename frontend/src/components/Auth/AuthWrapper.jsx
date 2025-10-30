@@ -10,7 +10,7 @@ const AuthWrapper = ({ onLoginSuccess }) => {
 
   // Called when signup completes successfully
   const handleSignupSuccess = () => {
-    setIsLoginMode(true); // ✅ Move to login form
+    setIsLoginMode(true); // Move to login form
   };
 
   return (
@@ -33,7 +33,7 @@ const AuthWrapper = ({ onLoginSuccess }) => {
             />
           ) : (
             <SignupForm
-              onSignupSuccess={handleSignupSuccess} // ✅ switch to login after signup
+              onSignupSuccess={handleSignupSuccess} // switch to login after signup
               switchToLogin={() => setIsLoginMode(true)}
             />
           )}
