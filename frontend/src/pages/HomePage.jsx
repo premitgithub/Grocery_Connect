@@ -1,39 +1,6 @@
-// import React from "react";
-// import Navbar from "../components/Navbar/Navbar";
-// import HeroSection from "../components/HomePage/HeroSection";
-// import ShopHighlights from "../components/HomePage/ShopHighlights";
-// import CategoriesSection from "../components/HomePage/CategoriesSection";
-// import TopProductsSection from "../components/HomePage/TopProductsSection";
-// import HowItWorksSection from "../components/HomePage/HowItWorksSection";
-// import StatsSection from "../components/HomePage/StatsSection";
-// import DownloadAppSection from "../components/HomePage/DownloadAppSection";
-// import TestimonialsSection from "../components/HomePage/TestimonialsSection";
-// import CTASection from "../components/HomePage/CTASection";
-// import AboutSection from "../components/HomePage/AboutSection";
-// import Footer from "../components/HomePage/Footer";
-
-// const HomePage = () => {
-//   return (
-//     <div className="min-h-screen bg-teal-50">
-//       <Navbar />
-//       <HeroSection />
-//       <ShopHighlights />
-//       <CategoriesSection />
-//       <TopProductsSection />
-//       <HowItWorksSection />
-//       <StatsSection />
-//       <DownloadAppSection />
-//       <TestimonialsSection />
-//       <CTASection />
-//       <AboutSection />
-//       <Footer />
-//     </div>
-//   );
-// };
-
-// export default HomePage;
-
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
 import Navbar from "../components/Navbar/Navbar";
 import HeroSection from "../components/HomePage/HeroSection";
 import ShopHighlights from "../components/HomePage/ShopHighlights";
@@ -46,39 +13,89 @@ import TestimonialsSection from "../components/HomePage/TestimonialsSection";
 import CTASection from "../components/HomePage/CTASection";
 import AboutSection from "../components/HomePage/AboutSection";
 import Footer from "../components/HomePage/Footer";
+import LoginModal from "../components/LoginModal/LoginModal";
 import Loader from "../components/PageLoader/Loader";
-import { useNavigate } from "react-router-dom";
+import ShopOwnerPopup from "../components/ShopOwnerPopup/ShopOwnerPopup";
 
 const HomePage = () => {
-  const [loading, setLoading] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showOwnerPopup, setShowOwnerPopup] = useState(false);
+  const [isShopOwner, setIsShopOwner] = useState(null);
   const navigate = useNavigate();
 
-  // Function for navbar navigation
-  const handleNavigateWithLoader = () => {
-    setLoading(true);
+  const handleLoginSuccess = () => {
+    setIsLoginOpen(false);
+
+    // show popup instead of directly loading
     setTimeout(() => {
-      setLoading(false);
-      navigate("/login");
-    }, 1000);
+      setShowOwnerPopup(true);
+    }, 400);
   };
 
-  if (loading) return <Loader />;
+  const handleOwnerSelection = (isOwner) => {
+    setShowOwnerPopup(false);
+    setIsShopOwner(isOwner);
+
+    // then show loader and navigate
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      navigate("/"); // homepage reload
+    }, 1500);
+  };
 
   return (
-    <div className="min-h-screen bg-teal-50">
-      {/* Pass handler to Navbar */}
-      <Navbar onNavigate={handleNavigateWithLoader} />
-      <HeroSection />
-      <ShopHighlights />
-      <CategoriesSection />
-      <TopProductsSection />
-      <HowItWorksSection />
-      <StatsSection />
-      <DownloadAppSection />
-      <TestimonialsSection />
-      <CTASection />
-      <AboutSection />
-      <Footer />
+    <div className="relative min-h-screen bg-teal-50 overflow-hidden">
+      <motion.div
+        className={`transition-all duration-500 ${
+          isLoading
+            ? "blur-md opacity-40 pointer-events-none"
+            : "blur-none opacity-100"
+        }`}
+      >
+        <Navbar onNavigate={() => setIsLoginOpen(true)} />
+        <HeroSection />
+        <ShopHighlights />
+        <CategoriesSection />
+        <TopProductsSection />
+        <HowItWorksSection />
+        <StatsSection />
+        <DownloadAppSection />
+        <TestimonialsSection />
+        {/* 👇 Show CTASection only if user is a shop owner */}
+        {isShopOwner && <CTASection />}
+        <AboutSection />
+        <Footer />
+      </motion.div>
+
+      <AnimatePresence>
+        {isLoading && (
+          <motion.div
+            className="fixed inset-0 bg-white/50 backdrop-blur-md z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            <Loader />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence mode="wait">
+        {isLoginOpen && (
+          <LoginModal
+            onClose={() => setIsLoginOpen(false)}
+            onLoginSuccess={handleLoginSuccess}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* 👇 Shop owner popup */}
+      <AnimatePresence>
+        {showOwnerPopup && <ShopOwnerPopup onSelect={handleOwnerSelection} />}
+      </AnimatePresence>
     </div>
   );
 };
