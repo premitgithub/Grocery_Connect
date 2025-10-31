@@ -1,16 +1,26 @@
 import React, { useState } from "react";
+import axios from "axios";
 import PasswordInput from "./../Shared/PasswordInput";
 
 const LoginForm = ({ onLoginSuccess, onForgotPassword, switchToSignup }) => {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // ✅ API call for login can go here
-    console.log("User logged in!");
+    
+    try {
+      const loginData = {email, password};
 
-    if (onLoginSuccess) onLoginSuccess(); // This will trigger popup/redirect logic
+      const response = await axios.post("http://localhost:5000/api/login", loginData);
+      console.log("✅ Login successful:", response.data);
+
+      if (onLoginSuccess) onLoginSuccess(); // This will trigger popup/redirect logic
+    }catch (error) {
+      console.error("❌ Login failed:", error.response?.data || error.message);
+    }
   };
 
   return (
@@ -19,6 +29,8 @@ const LoginForm = ({ onLoginSuccess, onForgotPassword, switchToSignup }) => {
         type="email"
         placeholder="Email Address"
         required
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
         className="w-full p-3 sm:p-4 border-b-2 border-gray-300 outline-none focus:border-emerald-500 placeholder-gray-400 text-sm sm:text-base"
       />
 
