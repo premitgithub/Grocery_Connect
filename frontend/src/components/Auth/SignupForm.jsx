@@ -1,12 +1,15 @@
 import React, { useState } from "react";
+import axios from "axios";
 import PasswordInput from "./../Shared/PasswordInput";
 
 const SignupForm = ({ onSignupSuccess, switchToLogin }) => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
@@ -17,10 +20,20 @@ const SignupForm = ({ onSignupSuccess, switchToLogin }) => {
     setPasswordError("");
 
     // ✅ API call for signup can go here
-    console.log("User signed up successfully!");
+    
+    try {
+      const signupData = { name, email, password };
+      const response = await axios.post("http://localhost:5000/api/signup", signupData);
 
-    if (onSignupSuccess) onSignupSuccess();
-    switchToLogin(); // ✅ Immediately go to login form
+      console.log("✅ Signup success:", response.data);
+      // alert("Signup successful! You can now log in.");
+
+      if (onSignupSuccess) onSignupSuccess();
+      switchToLogin(); // ✅ Immediately go to login form
+    }catch (error) {
+      console.error("❌ Signup failed:", error.response?.data || error.message);
+      // alert(error.response?.data?.message || "Signup failed");
+    }
   };
 
   const handlePasswordChange = (e) => {
@@ -45,12 +58,16 @@ const SignupForm = ({ onSignupSuccess, switchToLogin }) => {
         type="text"
         placeholder="Name"
         required
+        value={name}
+        onChange={(e) => setName(e.target.value)}
         className="w-full p-3 sm:p-4 border-b-2 border-gray-300 outline-none focus:border-emerald-500 placeholder-gray-400 text-sm sm:text-base"
       />
       <input
         type="email"
         placeholder="Email Address"
         required
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
         className="w-full p-3 sm:p-4 border-b-2 border-gray-300 outline-none focus:border-emerald-500 placeholder-gray-400 text-sm sm:text-base"
       />
 
