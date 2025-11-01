@@ -1,17 +1,18 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
-import Login from "./pages/Login";
-import { UserProvider } from "./context/UserContext";
+import { Toaster } from "react-hot-toast";
+
 
 const App = () => {
   return (
-    <UserProvider>
+    <>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<Login />} />
+        {/* Future routes can go here */}
       </Routes>
-    </UserProvider>
+      <Toaster position="top-center" reverseOrder={false} />
+    </>
   );
 };
 
