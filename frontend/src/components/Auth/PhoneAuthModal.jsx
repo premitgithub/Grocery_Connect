@@ -14,50 +14,94 @@ const PhoneAuthModal = ({ onClose }) => {
   const [showRolePopup, setShowRolePopup] = useState(false);
 
   // Step 1: Send OTP
-  const handleSendOtp = () => {
-    if (!phone.match(/^[6-9]\d{9}$/)) {
-      alert("Enter a valid 10-digit phone number.");
-      return;
-    }
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setStep("otp");
-    }, 1200);
-  };
+  const handleSendOtp = async () => {
+  if (!phone.match(/^[6-9]\d{9}$/)) {
+    toast.error("Enter a valid 10-digit phone number.");
+    return;
+  }
 
-  // Step 2: Verify OTP
-  const handleVerifyOtp = () => {
-    if (otp.length !== 6) {
-      alert("Please enter the 6-digit OTP.");
-      return;
-    }
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      // ✅ After verifying OTP, show role popup instead of inline buttons
-      setShowRolePopup(true);
-    }, 1200);
-  };
-
-  //   Step 3: Role selection (from separate ShopOwnerPopup)
-  const handleRoleSelection = (isShopOwner) => {
-    setUser({
-      phone,
-      isShopOwner,
-      verified: true,
+  setLoading(true);
+  try {
+    const res = await fetch("http://localhost:5000/api/send-otp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phone }),
     });
 
-    setShowRolePopup(false);
-    setLoading(true);
+    const data = await res.json();
 
-    // ✅ Add loader and close everything
-    setTimeout(() => {
-      setLoading(false);
-      toast.success("Logged in successfully 🎉");
-      onClose();
-    }, 1000);
+    if (res.ok) {
+      // ✅ For demo only — show OTP on screen
+      toast.success(`OTP Generated: ${data.otp}`);
+      setStep("otp");
+    } else {
+      toast.error(data.message || "Failed to send OTP");
+    }
+  } catch (error) {
+    toast.error("Something went wrong!");
+    console.error(error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+  // Step 2: Verify OTP
+  const handleVerifyOtp = async () => {
+  if (otp.length !== 6) {
+    toast.error("Please enter the 6-digit OTP.");
+    return;
+  }
+
+  setLoading(true);
+  try {
+    const res = await fetch("http://localhost:5000/api/verify-otp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phone, otp }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      // ✅ Save token and user in localStorage for session persistence
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      
+      // ✅ OTP verified — show role selection
+      setShowRolePopup(true);
+    } else {
+      toast.error(data.message || "Invalid OTP");
+    }
+  } catch (error) {
+    toast.error("Something went wrong!");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+  //   Step 3: Role selection (from separate ShopOwnerPopup)
+const handleRoleSelection = (isShopOwner) => {
+  const userData = {
+    phone,
+    isShopOwner,
+    verified: true,
   };
+
+  setUser(userData);
+  localStorage.setItem("user", JSON.stringify(userData));
+
+  setShowRolePopup(false);
+  setLoading(true);
+
+  setTimeout(() => {
+    setLoading(false);
+    toast.success("Logged in successfully 🎉");
+    onClose();
+  }, 1000);
+};
+
 
   return (
     <AnimatePresence>
