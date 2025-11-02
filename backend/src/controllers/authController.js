@@ -1,46 +1,63 @@
-import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
-// ✅ Signup Controller
-export const signup = async (req, res) => {
+const otpStore = {}; // temporary in-memory store
+
+// ✅ SEND OTP
+export const sendOtp = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { phone } = req.body;
+    if (!phone) return res.status(400).json({ message: "Phone required" });
 
-    if (!name || !email || !password)
-      return res.status(400).json({ message: "All fields are required" });
+    // generate 6-digit otp
+    const otp = Math.floor(100000 + Math.random() * 900000);
 
-    const existingUser = await User.findOne({ email });
-    if (existingUser)
-      return res.status(400).json({ message: "User already exists" });
+    // store otp with expiry
+    otpStore[phone] = {
+      otp,
+      expiresAt: Date.now() + 2 * 60 * 1000, // 2 minutes expiry
+    };
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    console.log(`OTP for ${phone}: ${otp}`); // For testing, remove later
 
-    const newUser = new User({ name, email, password: hashedPassword });
-    await newUser.save();
-
-    res.status(201).json({ message: "✅ User created successfully" });
+    return res.json({ message: "OTP sent successfully" });
   } catch (err) {
-    console.error("Signup Error:", err);
-    res.status(500).json({ message: "Server Error" });
+    console.error("Send OTP Error:", err);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-// ✅ Login Controller
-export const login = async (req, res) => {
+// ✅ VERIFY OTP
+export const verifyOtp = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { phone, otp } = req.body;
 
-    const user = await User.findOne({ email });
-    if (!user)
-      return res.status(404).json({ message: "User not found" });
+    const record = otpStore[phone];
+    if (!record)
+      return res.status(400).json({ message: "No OTP found. Please resend." });
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
-      return res.status(401).json({ message: "Invalid credentials" });
+    if (Date.now() > record.expiresAt)
+      return res.status(400).json({ message: "OTP expired. Please resend." });
 
-    res.json({ message: "✅ Login successful", user });
+    if (record.otp != otp)
+      return res.status(400).json({ message: "Invalid OTP" });
+
+    // ✅ Find or create user
+    let user = await User.findOne({ phone });
+    if (!user) user = await User.create({ phone, verified: true });
+
+    delete otpStore[phone];
+
+    // ✅ Generate JWT token
+    const token = jwt.sign(
+      { id: user._id, phone: user.phone },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES || "7d" }
+    );
+
+    res.json({ message: "Login successful", token, user });
   } catch (err) {
-    console.error("Login Error:", err);
-    res.status(500).json({ message: "Server Error" });
+    console.error("Verify OTP Error:", err);
+    res.status(500).json({ message: "Server error" });
   }
 };
