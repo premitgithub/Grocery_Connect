@@ -1,4 +1,5 @@
 import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { FaHome, FaBars, FaTimes } from "react-icons/fa";
 import { FiSearch, FiShoppingCart, FiUser } from "react-icons/fi";
 import { UserContext } from "../../context/UserContext";
@@ -25,12 +26,18 @@ const Navbar = ({ onLoginClick }) => {
     },
   ];
 
+  const navigate = useNavigate();
+
+  const home = () => {
+    navigate("/");
+  };
+
   return (
     <nav className="w-full bg-white shadow-md px-8 py-5 flex items-center justify-between border-b border-zinc-300 relative">
       {/* Logo */}
       <div className="flex items-center space-x-3 cursor-pointer">
         <FaHome className="text-2xl text-emerald-600" />
-        <span className="text-2xl font-bold text-gray-900">
+        <span onClick={home} className="text-2xl font-bold text-gray-900">
           Grocery Connect
         </span>
       </div>

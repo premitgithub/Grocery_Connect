@@ -8,8 +8,8 @@ const LogoutConfirmModal = ({ isOpen, onClose }) => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    window.location.reload(); // refresh to reset state
     navigate("/"); // ✅ redirect to homepage
+    window.location.reload(); // refresh to reset state
     onClose();
   };
 
