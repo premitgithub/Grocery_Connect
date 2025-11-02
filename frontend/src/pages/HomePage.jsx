@@ -154,7 +154,7 @@ const HomePage = () => {
             : "blur-none opacity-100"
         }`}
       >
-        <Navbar onLoginClick={() => setIsLoginOpen(true)} />
+        {/* <Navbar onLoginClick={() => setIsLoginOpen(true)} /> */}
         <HeroSection />
         <ShopHighlights />
         <CategoriesSection />
