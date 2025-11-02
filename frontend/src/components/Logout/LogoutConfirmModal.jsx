@@ -6,7 +6,9 @@ const LogoutConfirmModal = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // You can also clear context/localStorage here later
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    window.location.reload(); // refresh to reset state
     navigate("/"); // ✅ redirect to homepage
     onClose();
   };
