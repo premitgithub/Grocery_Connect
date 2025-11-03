@@ -16,6 +16,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1601004890684-d8cbf643f5f2"],
     stock: 150,
     brand: "Local Farm",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.5
   },
   {
@@ -26,6 +27,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1582515073490-dc99e481b9f8"],
     stock: 90,
     brand: "Fresh Leaf",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.8
   },
   {
@@ -36,6 +38,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1592928303165-76dc3e4a2978"],
     stock: 70,
     brand: "Nature’s Basket",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.6
   },
   {
@@ -46,6 +49,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1574169208507-84376144848b"],
     stock: 100,
     brand: "FarmFresh",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.7
   },
   {
@@ -56,6 +60,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1567306226416-28f0efdc88ce"],
     stock: 90,
     brand: "Green Valley",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.6
   },
   {
@@ -66,6 +71,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1601004890684-d8cbf643f5f2"],
     stock: 200,
     brand: "Local Market",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.5
   },
 
@@ -78,6 +84,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1574226516831-e1dff420e12e"],
     stock: 150,
     brand: "Tropical Farms",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.8
   },
   {
@@ -88,6 +95,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1619546813926-a78fa6372cd2"],
     stock: 120,
     brand: "Citrus Co.",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.7
   },
   {
@@ -98,6 +106,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1615485290390-0e6f4c49387f"],
     stock: 100,
     brand: "Ratnagiri Farms",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.9
   },
   {
@@ -108,6 +117,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1589927986089-35812388d1f4"],
     stock: 70,
     brand: "Tropical Fresh",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.6
   },
   {
@@ -118,6 +128,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1592928303165-76dc3e4a2978"],
     stock: 80,
     brand: "FarmFresh",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.5
   },
   {
@@ -128,6 +139,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1601050690597-1e6f5a1b8f1a"],
     stock: 90,
     brand: "Green Valley",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.7
   },
 
@@ -140,6 +152,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1615485290390-0e6f4c49387f"],
     stock: 150,
     brand: "Fortune",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.6
   },
   {
@@ -150,6 +163,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1622206152592-3f88cd858c0c"],
     stock: 130,
     brand: "Dhara",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.7
   },
   {
@@ -160,6 +174,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1602526218855-8e5fdfb2f6e5"],
     stock: 120,
     brand: "Saffola",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.8
   },
   {
@@ -170,6 +185,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1602526218855-8e5fdfb2f6e5"],
     stock: 110,
     brand: "Emami",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.5
   },
   {
@@ -180,6 +196,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1602526218855-8e5fdfb2f6e5"],
     stock: 60,
     brand: "Figaro",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.9
   },
   {
@@ -190,6 +207,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1622206152592-3f88cd858c0c"],
     stock: 140,
     brand: "Patanjali",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.6
   },
 
@@ -202,6 +220,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1608198093002-ad4e005484ec"],
     stock: 80,
     brand: "Britannia",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.7
   },
   {
@@ -212,6 +231,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1565958011705-44e211edcfb4"],
     stock: 90,
     brand: "Modern",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.5
   },
   {
@@ -222,6 +242,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1608198093002-ad4e005484ec"],
     stock: 75,
     brand: "Harvest",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.8
   },
   {
@@ -232,6 +253,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1608198093002-ad4e005484ec"],
     stock: 60,
     brand: "English Oven",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.6
   },
   {
@@ -242,6 +264,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1608198093002-ad4e005484ec"],
     stock: 110,
     brand: "Amul",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.6
   },
   {
@@ -252,6 +275,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1608198093002-ad4e005484ec"],
     stock: 90,
     brand: "BakeSmith",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.7
   },
 
@@ -264,6 +288,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1613470200783-9b30829c6b2b"],
     stock: 200,
     brand: "Coca-Cola",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.8
   },
   {
@@ -274,6 +299,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1613470200783-9b30829c6b2b"],
     stock: 180,
     brand: "Pepsi",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.7
   },
   {
@@ -284,6 +310,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1613470200783-9b30829c6b2b"],
     stock: 160,
     brand: "Sprite",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.7
   },
   {
@@ -294,6 +321,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1615485290390-0e6f4c49387f"],
     stock: 130,
     brand: "Frooti",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.6
   },
   {
@@ -304,6 +332,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1601050690597-1e6f5a1b8f1a"],
     stock: 120,
     brand: "Real",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.8
   },
   {
@@ -314,6 +343,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1605475128028-15c26d61be6e"],
     stock: 100,
     brand: "Red Bull",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.9
   },
 
@@ -326,6 +356,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1625654201412-27e8e9e99242"],
     stock: 90,
     brand: "Surf Excel",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.8
   },
   {
@@ -336,6 +367,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1625654201412-27e8e9e99242"],
     stock: 180,
     brand: "Rin",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.5
   },
   {
@@ -346,6 +378,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1625654201412-27e8e9e99242"],
     stock: 200,
     brand: "Tide",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.7
   },
   {
@@ -356,6 +389,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1625654201412-27e8e9e99242"],
     stock: 160,
     brand: "Dettol",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.8
   },
   {
@@ -366,6 +400,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1625654201412-27e8e9e99242"],
     stock: 190,
     brand: "Lifebuoy",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.6
   },
   {
@@ -376,6 +411,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1625654201412-27e8e9e99242"],
     stock: 170,
     brand: "Lux",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.7
   },
   {
@@ -386,6 +422,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1625654201412-27e8e9e99242"],
     stock: 160,
     brand: "Pears",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.8
   },
   {
@@ -396,6 +433,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1625654201412-27e8e9e99242"],
     stock: 180,
     brand: "Wheel",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.6
   },
   {
@@ -406,6 +444,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1625654201412-27e8e9e99242"],
     stock: 150,
     brand: "Vim",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.8
   },
   {
@@ -416,6 +455,7 @@ const products = [
     images: ["https://images.unsplash.com/photo-1625654201412-27e8e9e99242"],
     stock: 100,
     brand: "Comfort",
+    shop: "6725f2b9a1b9bce4c4a91234",
     rating: 4.7
   }
 ];
