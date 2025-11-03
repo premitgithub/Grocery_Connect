@@ -1,4 +1,3 @@
-// src/components/Auth/OtpInput.jsx
 import React, { useRef } from "react";
 
 const OtpInput = ({ otp, setOtp }) => {

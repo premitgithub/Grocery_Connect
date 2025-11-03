@@ -1,7 +1,7 @@
 import React, { useEffect, useContext } from "react";
 import { Toaster } from "react-hot-toast";
 import { UserContext } from "./context/UserContext";
-import AppRoutes from "./routes/AppRoutes"; // ✅ use central route manager
+import AppRoutes from "./routes/AppRoutes"; 
 
 const App = () => {
   const { setUser } = useContext(UserContext);
@@ -16,7 +16,7 @@ const App = () => {
 
   return (
     <>
-      <AppRoutes /> {/* ✅ All routing handled here */}
+      <AppRoutes /> 
       <Toaster position="top-center" reverseOrder={false} />
     </>
   );

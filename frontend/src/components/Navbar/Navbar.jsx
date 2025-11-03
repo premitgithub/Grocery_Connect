@@ -4,7 +4,7 @@ import { FaHome, FaBars, FaTimes } from "react-icons/fa";
 import { FiSearch, FiShoppingCart, FiUser } from "react-icons/fi";
 import { UserContext } from "../../context/UserContext";
 import SearchBar from "./SearchBar";
-import UserDropdown from "./UserDropdown"; // ✅ new import
+import UserDropdown from "./UserDropdown"; 
 
 const Navbar = ({ onLoginClick }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,8 +12,10 @@ const Navbar = ({ onLoginClick }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const { user } = useContext(UserContext);
 
+  const { totalItems } = useContext(UserContext);
+
   const menuItems = [
-    { label: "Products" },
+    { label: "Products", action: () => navigate("/products") },
     { label: "Orders" },
     {
       label: "Search",
@@ -22,7 +24,17 @@ const Navbar = ({ onLoginClick }) => {
     },
     {
       label: "Cart",
-      icon: <FiShoppingCart className="text-teal-600 text-3xl" />,
+      action: () => navigate("/cart"),
+      icon: (
+        <div className="relative">
+          <FiShoppingCart className="text-teal-600 text-3xl" />
+          {totalItems > 0 && (
+            <span className="absolute -bottom-1 -right-2 bg-red-500 text-white text-xs font-semibold px-1.5 py-0.5 rounded-full shadow">
+              {totalItems}
+            </span>
+          )}
+        </div>
+      ),
     },
   ];
 
@@ -33,17 +45,11 @@ const Navbar = ({ onLoginClick }) => {
   };
 
   return (
-    <nav className="w-full bg-white shadow-md px-8 py-5 flex items-center justify-between border-b border-zinc-300 relative">
+    <nav className="sticky top-0 z-50 w-full bg-white shadow-md px-8 py-5 flex items-center justify-between border-b border-zinc-300 ">
       {/* Logo */}
       <div className="flex items-center space-x-3 cursor-pointer">
         <FaHome className="text-2xl text-emerald-600" />
         <span onClick={home} className="text-2xl font-bold text-gray-900">
-          {/* <img
-            src="/logos/output-onlinepngtools.png"
-            alt="Shopping"
-            className="w-4 sm:w-40
-          md:w-48 lg:w-40 drop-shadow-lg mix-blend-multiply"
-          /> */}
           Grocera
         </span>
       </div>
