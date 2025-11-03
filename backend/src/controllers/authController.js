@@ -20,6 +20,10 @@ export const sendOtp = async (req, res) => {
 
     console.log(`OTP for ${phone}: ${otp}`); // For testing, remove later
 
+    res.status(200).json({
+    message: "OTP generated successfully",
+    otp,
+    });
     return res.json({ message: "OTP sent successfully" , otp});
   } catch (err) {
     console.error("Send OTP Error:", err);
