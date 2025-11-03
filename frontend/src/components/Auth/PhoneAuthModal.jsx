@@ -15,93 +15,92 @@ const PhoneAuthModal = ({ onClose }) => {
 
   // Step 1: Send OTP
   const handleSendOtp = async () => {
-  if (!phone.match(/^[6-9]\d{9}$/)) {
-    toast.error("Enter a valid 10-digit phone number.");
-    return;
-  }
-
-  setLoading(true);
-  try {
-    const res = await fetch("http://localhost:5000/api/send-otp", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ phone }),
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      // ✅ For demo only — show OTP on screen
-      toast.success(`OTP Generated: ${data.otp}`);
-      setStep("otp");
-    } else {
-      toast.error(data.message || "Failed to send OTP");
+    if (!phone.match(/^[6-9]\d{9}$/)) {
+      toast.error("Enter a valid 10-digit phone number.");
+      return;
     }
-  } catch (error) {
-    toast.error("Something went wrong!");
-    console.error(error);
-  } finally {
-    setLoading(false);
-  }
-};
 
+    setLoading(true);
+    try {
+      const res = await fetch("http://localhost:5000/api/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        // ✅ For demo only — show OTP on screen
+        toast.success(`OTP Generated: ${data.otp}`);
+        setStep("otp");
+      } else {
+        toast.error(data.message || "Failed to send OTP");
+      }
+    } catch (error) {
+      toast.error("Something went wrong!");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Step 2: Verify OTP
   const handleVerifyOtp = async () => {
-  if (otp.length !== 6) {
-    toast.error("Please enter the 6-digit OTP.");
-    return;
-  }
-
-  setLoading(true);
-  try {
-    const res = await fetch("http://localhost:5000/api/verify-otp", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ phone, otp }),
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      // ✅ Save token and user in localStorage for session persistence
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
-      
-      // ✅ OTP verified — show role selection
-      setShowRolePopup(true);
-    } else {
-      toast.error(data.message || "Invalid OTP");
+    if (otp.length !== 6) {
+      toast.error("Please enter the 6-digit OTP.");
+      return;
     }
-  } catch (error) {
-    toast.error("Something went wrong!");
-  } finally {
-    setLoading(false);
-  }
-};
 
+    setLoading(true);
+    try {
+      const res = await fetch("http://localhost:5000/api/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone, otp }),
+      });
 
-  //   Step 3: Role selection (from separate ShopOwnerPopup)
-const handleRoleSelection = (isShopOwner) => {
-  const userData = {
-    phone,
-    isShopOwner,
-    verified: true,
+      const data = await res.json();
+
+      if (res.ok) {
+        // ✅ Save token and user in localStorage for session persistence
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+
+        // ✅ OTP verified — show role selection
+        setShowRolePopup(true);
+      } else {
+        toast.error(data.message || "Invalid OTP");
+      }
+    } catch (error) {
+      toast.error("Something went wrong!");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  setUser(userData);
-  localStorage.setItem("user", JSON.stringify(userData));
+  //   Step 3: Role selection (from separate ShopOwnerPopup)
+  const handleRoleSelection = (isShopOwner) => {
+    const userData = {
+      phone,
+      isShopOwner,
+      verified: true,
+    };
 
-  setShowRolePopup(false);
-  setLoading(true);
+    setUser(userData);
 
-  setTimeout(() => {
-    setLoading(false);
-    toast.success("Logged in successfully 🎉");
-    onClose();
-  }, 1000);
-};
+    localStorage.setItem("user", JSON.stringify(userData));
 
+
+    setShowRolePopup(false);
+    setLoading(true);
+
+    setTimeout(() => {
+      setLoading(false);
+      toast.success("Logged in successfully 🎉");
+      onClose();
+    }, 1000);
+  };
 
   return (
     <AnimatePresence>

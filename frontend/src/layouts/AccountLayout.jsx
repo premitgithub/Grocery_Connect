@@ -14,7 +14,6 @@ const AccountLayout = () => {
     { label: "Settings", path: "/account/settings" },
   ];
 
-  // ✅ Fade + slide transition, tuned for no double flash
   const fadeVariants = {
     hidden: { opacity: 0, y: 8, scale: 0.99 },
     visible: {
@@ -26,8 +25,8 @@ const AccountLayout = () => {
   };
 
   return (
-    <div className="flex justify-center py-12 px-4">
-      <div className="flex flex-col md:flex-row w-full max-w-5xl bg-white shadow-xl rounded-2xl border border-gray-200 overflow-hidden">
+    <div className="flex justify-center py-20 px-4">
+      <div className="flex flex-col md:flex-row w-full max-w-6xl bg-white shadow-xl rounded-2xl border border-gray-200 overflow-hidden hover:shadow-2xl duration-500">
         {/* Sidebar */}
         <aside className="md:w-1/4 w-full border-b md:border-b-0 md:border-r border-gray-200 bg-gray-50">
           <nav className="flex md:flex-col justify-around md:justify-start">
@@ -44,7 +43,6 @@ const AccountLayout = () => {
                 }
               >
                 {link.label}
-                {/* Optional teal indicator bar */}
                 {({ isActive }) =>
                   isActive && (
                     <motion.div
@@ -63,8 +61,8 @@ const AccountLayout = () => {
           </nav>
         </aside>
 
-        {/* Content with fade transition */}
-        <main className="flex-1 p-6 overflow-hidden">
+        {/* Main Content with smooth fade + scroll */}
+        <main className="flex-1 p-6 overflow-y-auto max-h-[75vh] scroll-smooth scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100">
           <AnimatePresence mode="wait">
             <motion.div
               key={location.pathname}
