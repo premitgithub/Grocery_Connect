@@ -9,8 +9,8 @@ const LogoutConfirmModal = ({ isOpen, onClose }) => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    navigate("/"); // ✅ redirect to homepage
-    window.location.reload(); // refresh to reset state
+    navigate("/"); 
+    window.location.reload(); 
     toast.success("Logged out successfully 🎉");
     onClose();
   };

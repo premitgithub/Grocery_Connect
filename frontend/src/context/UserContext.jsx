@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useMemo } from "react";
 import { defaultProfile, defaultAddress } from "../data/defaultData";
 
 export const UserContext = createContext();
@@ -37,6 +37,28 @@ export const UserProvider = ({ children }) => {
     return stored ? JSON.parse(stored) : [defaultAddress];
   });
 
+  // --- CART STATE ---
+  // Array of { productId, product (snapshot), qty }
+  const [cart, setCart] = useState(() => {
+    const stored = localStorage.getItem("cart");
+    return stored ? JSON.parse(stored) : [];
+  });
+
+  // --- CART DERIVED VALUES ---
+  const totalItems = useMemo(
+    () => cart.reduce((sum, item) => sum + (item.qty || 0), 0),
+    [cart]
+  );
+
+  const cartSubtotal = useMemo(
+    () =>
+      cart.reduce(
+        (sum, item) => sum + Number(item.product?.price || 0) * item.qty,
+        0
+      ),
+    [cart]
+  );
+
   // --- Keep profile phone synced with user phone ---
   useEffect(() => {
     if (user?.phone && profile?.phone !== user.phone) {
@@ -60,6 +82,10 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem("addresses", JSON.stringify(addresses));
   }, [addresses]);
+
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
 
   // --- Helper: update user and persist immediately ---
   const updateUserData = (data) => {
@@ -102,6 +128,45 @@ export const UserProvider = ({ children }) => {
     localStorage.setItem("address", JSON.stringify(addr));
   };
 
+  // --- CART HELPERS ---
+  const addToCart = (product, qty = 1) => {
+    setCart((prev) => {
+      const idx = prev.findIndex((p) => p.productId === product._id);
+      if (idx > -1) {
+        const updated = [...prev];
+        updated[idx] = { ...updated[idx], qty: updated[idx].qty + qty };
+        return updated;
+      }
+      return [
+        ...prev,
+        {
+          productId: product._id,
+          product: {
+            _id: product._id,
+            name: product.name,
+            price: product.price,
+            images: product.images,
+            stock: product.stock,
+          },
+          qty,
+        },
+      ];
+    });
+  };
+
+  const setCartQty = (productId, qty) => {
+    setCart((prev) => {
+      if (qty <= 0) return prev.filter((p) => p.productId !== productId);
+      return prev.map((p) => (p.productId === productId ? { ...p, qty } : p));
+    });
+  };
+
+  const removeFromCart = (productId) => {
+    setCart((prev) => prev.filter((p) => p.productId !== productId));
+  };
+
+  const clearCart = () => setCart([]);
+
   // --- Provide everything globally ---
   return (
     <UserContext.Provider
@@ -118,6 +183,15 @@ export const UserProvider = ({ children }) => {
         addAddress,
         deleteAddress,
         selectAddress,
+        // Cart related
+        cart,
+        setCart,
+        addToCart,
+        setCartQty,
+        removeFromCart,
+        clearCart,
+        totalItems,
+        cartSubtotal,
       }}
     >
       {children}

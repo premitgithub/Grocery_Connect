@@ -16,7 +16,6 @@ const UserDropdown = ({ isOpen, onClose }) => {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const navigate = useNavigate();
 
-  // ✅ close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -45,7 +44,7 @@ const UserDropdown = ({ isOpen, onClose }) => {
     },
   };
 
-  // ✅ helper for navigation
+  // helper for navigation
   const handleNavigate = (path) => {
     navigate(path);
     onClose();
@@ -125,7 +124,7 @@ const UserDropdown = ({ isOpen, onClose }) => {
         )}
       </AnimatePresence>
 
-      {/* ✅ Logout Modal */}
+      {/* Logout Modal */}
       <LogoutConfirmModal
         isOpen={showLogoutModal}
         onClose={() => setShowLogoutModal(false)}

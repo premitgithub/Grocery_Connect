@@ -7,10 +7,10 @@ const ProfileField = ({ label, value, name, onChange, editable = true, placehold
       value={value}
       onChange={onChange}
       disabled={!editable}
-      placeholder={placeholder} // 👈 placeholder text shows when empty
+      placeholder={placeholder} 
       className={`w-full border rounded-lg px-4 py-2 text-gray-900 focus:ring-2 focus:ring-teal-500 focus:outline-none 
         ${!editable ? "bg-gray-100 cursor-not-allowed" : ""} 
-        ${!value ? "placeholder-gray-400" : ""}`} // 👈 grey placeholder
+        ${!value ? "placeholder-gray-400" : ""}`}
     />
   </div>
 );

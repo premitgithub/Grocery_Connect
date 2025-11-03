@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 
 const PhoneAuthModal = ({ onClose }) => {
   const { setUser } = useContext(UserContext);
-  const [step, setStep] = useState("phone"); // "phone" | "otp"
+  const [step, setStep] = useState("phone"); 
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
@@ -31,7 +31,7 @@ const PhoneAuthModal = ({ onClose }) => {
       const data = await res.json();
 
       if (res.ok) {
-        // ✅ For demo only — show OTP on screen
+        // For demo
         toast.success(`OTP Generated: ${data.otp}`);
         setStep("otp");
       } else {
@@ -63,11 +63,11 @@ const PhoneAuthModal = ({ onClose }) => {
       const data = await res.json();
 
       if (res.ok) {
-        // ✅ Save token and user in localStorage for session persistence
+        // Save token and user in localStorage for session persistence
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
 
-        // ✅ OTP verified — show role selection
+        // OTP verified — show role selection
         setShowRolePopup(true);
       } else {
         toast.error(data.message || "Invalid OTP");
@@ -174,7 +174,7 @@ const PhoneAuthModal = ({ onClose }) => {
           )}
         </motion.div>
 
-        {/* ✅ Separate popup for role selection */}
+        {/* Separate popup for role selection */}
         <AnimatePresence>
           {showRolePopup && <ShopOwnerPopup onSelect={handleRoleSelection} />}
         </AnimatePresence>

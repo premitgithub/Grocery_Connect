@@ -5,7 +5,7 @@ const TopProductsSection = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Fetch all products from backend
+  // Fetch all products from backend
   useEffect(() => {
     const fetchProducts = async () => {
       try {
