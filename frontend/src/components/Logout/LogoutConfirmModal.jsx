@@ -1,6 +1,7 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const LogoutConfirmModal = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
@@ -10,6 +11,7 @@ const LogoutConfirmModal = ({ isOpen, onClose }) => {
     localStorage.removeItem("user");
     navigate("/"); // ✅ redirect to homepage
     window.location.reload(); // refresh to reset state
+    toast.success("Logged out successfully 🎉");
     onClose();
   };
 

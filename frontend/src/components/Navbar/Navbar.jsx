@@ -38,7 +38,13 @@ const Navbar = ({ onLoginClick }) => {
       <div className="flex items-center space-x-3 cursor-pointer">
         <FaHome className="text-2xl text-emerald-600" />
         <span onClick={home} className="text-2xl font-bold text-gray-900">
-          Grocery Connect
+          {/* <img
+            src="/logos/output-onlinepngtools.png"
+            alt="Shopping"
+            className="w-4 sm:w-40
+          md:w-48 lg:w-40 drop-shadow-lg mix-blend-multiply"
+          /> */}
+          Grocera
         </span>
       </div>
 

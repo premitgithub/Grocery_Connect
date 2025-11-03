@@ -24,6 +24,7 @@ export const sendOtp = async (req, res) => {
     message: "OTP generated successfully",
     otp,
     });
+    return res.json({ message: "OTP sent successfully" , otp});
   } catch (err) {
     console.error("Send OTP Error:", err);
     res.status(500).json({ message: "Server error" });
