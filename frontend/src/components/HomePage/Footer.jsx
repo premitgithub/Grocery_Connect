@@ -5,7 +5,7 @@ const Footer = () => {
     <footer className="bg-white border-t border-gray-200 py-6 text-center text-gray-600">
       <p>
         © {new Date().getFullYear()}{" "}
-        <span className="text-teal-700 font-semibold">Grocery Connect</span>.
+        <span className="text-teal-700 font-semibold">Grocera</span>.
         All rights reserved.
       </p>
     </footer>

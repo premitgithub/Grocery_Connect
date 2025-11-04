@@ -1,12 +1,15 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState} from "react";
 import { motion } from "framer-motion";
 import { UserContext } from "../../context/UserContext";
 import toast from "react-hot-toast";
+import { useNavigate } from 'react-router-dom';
 
 const ProductCard = ({ product, onClick }) => {
   const { addToCart, setCartQty, removeFromCart, cart } =
     useContext(UserContext);
   const [adding, setAdding] = useState(false);
+
+  const navigate = useNavigate();
 
   // find if product already in cart
   const cartItem = cart.find((c) => c.productId === product._id);
@@ -76,10 +79,7 @@ const ProductCard = ({ product, onClick }) => {
           <div className="flex items-center gap-2">
             {/* View button */}
             <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onClick(product);
-              }}
+              onClick={() => navigate(`/products/${product.name}`)}
               className="text-sm px-3 py-1 border rounded-lg hover:bg-gray-100 cursor-pointer"
             >
               View
