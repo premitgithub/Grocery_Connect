@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect, useMemo } from "react";
 import { defaultProfile, defaultAddress } from "../data/defaultData";
+import toast from "react-hot-toast";
 
 export const UserContext = createContext();
 
@@ -167,6 +168,21 @@ export const UserProvider = ({ children }) => {
 
   const clearCart = () => setCart([]);
 
+  // --- LOGIN MODAL STATE ---
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+  // --- Helper: Require login before performing sensitive actions ---
+  const requireLogin = (action) => {
+    if (!user?.phone) {
+      toast.error("Please log in to continue");
+      setShowLoginModal(true);
+      return false;
+    }
+    // if logged in
+    if (typeof action === "function") action();
+    return true;
+  };
+
   // --- Provide everything globally ---
   return (
     <UserContext.Provider
@@ -192,6 +208,9 @@ export const UserProvider = ({ children }) => {
         clearCart,
         totalItems,
         cartSubtotal,
+        showLoginModal,
+        setShowLoginModal,
+        requireLogin,
       }}
     >
       {children}

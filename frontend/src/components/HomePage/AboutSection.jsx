@@ -4,7 +4,7 @@ const AboutSection = () => {
   return (
     <section className="py-20 bg-gradient-to-r from-teal-50 via-white to-emerald-50 text-center">
       <h2 className="text-3xl font-bold text-teal-900 mb-6">
-        Why Grocery Connect?
+        Why Grocera?
       </h2>
       <p className="max-w-3xl mx-auto text-gray-700 text-lg leading-relaxed">
         With ultra-fast delivery apps taking over, local grocery stores often

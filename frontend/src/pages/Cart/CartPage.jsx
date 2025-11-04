@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { UserContext } from "../../context/UserContext";
 import CartItem from "../../components/Cart/CartItem";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const CartPage = () => {
   const {
@@ -12,8 +13,17 @@ const CartPage = () => {
     clearCart,
     cartSubtotal,
     totalItems,
+    requireLogin,
   } = useContext(UserContext);
   const navigate = useNavigate();
+
+  const handleProceedToPay = () => {
+    requireLogin(() => {
+      // this runs only if logged in
+      toast.success("Proceeding to checkout...");
+      // navigate("/checkout"); 
+    });
+  };
 
   return (
     <div className="min-h-screen bg-teal-50 py-8 px-4">
@@ -73,7 +83,10 @@ const CartPage = () => {
               <span className="font-semibold">₹{cartSubtotal}</span>
             </div>
             <div className="border-t mt-4 pt-4 space-y-3">
-              <button className="w-full bg-teal-600 cursor-pointer text-xl hover:bg-teal-800 duration-400 py-5 rounded-lg text-white font-semibold">
+              <button
+                className="w-full bg-teal-600 cursor-pointer text-xl hover:bg-teal-800 duration-400 py-5 rounded-lg text-white font-semibold"
+                onClick={handleProceedToPay}
+              >
                 Proceed to Checkout
               </button>
               <button

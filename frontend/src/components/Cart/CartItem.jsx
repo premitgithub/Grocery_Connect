@@ -1,9 +1,15 @@
-// src/components/Cart/CartItem.jsx
 import React from "react";
 import { FiTrash2 } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
 const CartItem = ({ item, onQtyChange, onRemove }) => {
   const { product, qty } = item;
+  const navigate = useNavigate();
+
+  const handleNameClick = () => {
+    const encodedName = encodeURIComponent(product.name);
+    navigate(`/products/${encodedName}`);
+  };
 
   return (
     <div className="flex items-start gap-4 p-8 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition">
@@ -12,8 +18,14 @@ const CartItem = ({ item, onQtyChange, onRemove }) => {
         alt={product.name}
         className="w-24 h-24 object-cover rounded-lg"
       />
+
       <div className="flex-1">
-        <h4 className="font-semibold text-lg">{product.name}</h4>
+        <h4
+          onClick={handleNameClick}
+          className="font-semibold text-lg cursor-pointer hover:underline hover:text-teal-700 duration-200"
+        >
+          {product.name}
+        </h4>
         <p className="text-sm text-gray-500 mb-2">₹{product.price}</p>
 
         <div className="flex items-center gap-3">
@@ -51,3 +63,4 @@ const CartItem = ({ item, onQtyChange, onRemove }) => {
 };
 
 export default CartItem;
+
