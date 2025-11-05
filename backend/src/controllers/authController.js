@@ -20,10 +20,6 @@ export const sendOtp = async (req, res) => {
 
     console.log(`OTP for ${phone}: ${otp}`); // For testing, remove later
 
-    res.status(200).json({
-    message: "OTP generated successfully",
-    otp,
-    });
     return res.json({ message: "OTP sent successfully" , otp});
   } catch (err) {
     console.error("Send OTP Error:", err);
@@ -48,7 +44,14 @@ export const verifyOtp = async (req, res) => {
 
     // ✅ Find or create user
     let user = await User.findOne({ phone });
-    if (!user) user = await User.create({ phone, verified: true });
+    let isNewUser = false;
+    if (!user) {
+      user = await User.create({ phone, verified: true });
+      isNewUser = true;
+    }else {
+      user.verified = true;
+      await user.save();
+    }
 
     delete otpStore[phone];
 
@@ -59,9 +62,36 @@ export const verifyOtp = async (req, res) => {
       { expiresIn: process.env.JWT_EXPIRES || "7d" }
     );
 
-    res.json({ message: "Login successful", token, user });
+    res.json({ message: "Login successful", token, user, isNewUser });
   } catch (err) {
     console.error("Verify OTP Error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
+
+// ✅ SET USER ROLE
+export const setUserRole = async (req, res) => {
+  try {
+    const { phone, isShopOwner } = req.body;
+
+    if (!phone) {
+      return res.status(400).json({ message: "Phone number required" });
+    }
+
+    const user = await User.findOneAndUpdate(
+      { phone },
+      { isShopOwner },
+      { new: true } // return updated document
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ message: "User role updated successfully", user });
+  } catch (err) {
+    console.error("Set Role Error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
