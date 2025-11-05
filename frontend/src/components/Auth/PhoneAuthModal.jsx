@@ -68,7 +68,13 @@ const PhoneAuthModal = ({ onClose }) => {
         localStorage.setItem("user", JSON.stringify(data.user));
 
         // OTP verified — show role selection
-        setShowRolePopup(true);
+        if( data.isNewUser) {
+          setShowRolePopup(true);
+        } else {
+          setUser(data.user);
+          toast.success("Logged in successfully 🎉");
+          onClose();
+        }
       } else {
         toast.error(data.message || "Invalid OTP");
       }
@@ -80,27 +86,57 @@ const PhoneAuthModal = ({ onClose }) => {
   };
 
   //   Step 3: Role selection (from separate ShopOwnerPopup)
-  const handleRoleSelection = (isShopOwner) => {
-    const userData = {
-      phone,
-      isShopOwner,
-      verified: true,
-    };
+  // const handleRoleSelection = (isShopOwner) => {
+  //   const userData = {
+  //     phone,
+  //     isShopOwner,
+  //     verified: true,
+  //   };
 
-    setUser(userData);
+  //   setUser(userData);
 
-    localStorage.setItem("user", JSON.stringify(userData));
+  //   localStorage.setItem("user", JSON.stringify(userData));
 
 
-    setShowRolePopup(false);
-    setLoading(true);
+  //   setShowRolePopup(false);
+  //   setLoading(true);
 
-    setTimeout(() => {
-      setLoading(false);
+  //   setTimeout(() => {
+  //     setLoading(false);
+  //     toast.success("Logged in successfully 🎉");
+  //     onClose();
+  //   }, 1000);
+  // };
+
+  // ✅ Step 3: Role selection (from separate ShopOwnerPopup)
+const handleRoleSelection = async (isShopOwner) => {
+  setLoading(true);
+
+  try {
+    const res = await fetch("http://localhost:5000/api/set-role", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phone, isShopOwner }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      setUser(data.user);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
       toast.success("Logged in successfully 🎉");
+      setShowRolePopup(false);
       onClose();
-    }, 1000);
-  };
+    } else {
+      toast.error(data.message || "Failed to update role");
+    }
+  } catch (err) {
+    toast.error("Something went wrong!");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <AnimatePresence>
