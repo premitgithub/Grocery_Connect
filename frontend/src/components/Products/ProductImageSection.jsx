@@ -1,25 +1,3 @@
-// import React from "react";
-// import { motion } from "framer-motion";
-
-// const ProductImageSection = ({ productName }) => {
-//   return (
-//     <motion.div
-//       initial={{ scale: 0.9, opacity: 0 }}
-//       animate={{ scale: 1, opacity: 1 }}
-//       transition={{ duration: 0.3 }}
-//       className="bg-white rounded-2xl p-8 shadow-xl flex items-center justify-center"
-//     >
-//       <img
-//         src="https://via.placeholder.com/400"
-//         alt={productName}
-//         className="rounded-xl max-h-[400px] object-contain"
-//       />
-//     </motion.div>
-//   );
-// };
-
-// export default ProductImageSection;
-
 import React from "react";
 import { motion } from "framer-motion";
 
