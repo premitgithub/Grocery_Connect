@@ -129,44 +129,165 @@ export const UserProvider = ({ children }) => {
     localStorage.setItem("address", JSON.stringify(addr));
   };
 
-  // --- CART HELPERS ---
-  const addToCart = (product, qty = 1) => {
-    setCart((prev) => {
-      const idx = prev.findIndex((p) => p.productId === product._id);
-      if (idx > -1) {
-        const updated = [...prev];
-        updated[idx] = { ...updated[idx], qty: updated[idx].qty + qty };
-        return updated;
-      }
-      return [
-        ...prev,
-        {
-          productId: product._id,
-          product: {
-            _id: product._id,
-            name: product.name,
-            price: product.price,
-            images: product.images,
-            stock: product.stock,
-          },
-          qty,
-        },
-      ];
+  // // --- CART HELPERS ---
+  // const addToCart = (product, qty = 1) => {
+  //   setCart((prev) => {
+  //     const idx = prev.findIndex((p) => p.productId === product._id);
+  //     if (idx > -1) {
+  //       const updated = [...prev];
+  //       updated[idx] = { ...updated[idx], qty: updated[idx].qty + qty };
+  //       return updated;
+  //     }
+  //     return [
+  //       ...prev,
+  //       {
+  //         productId: product._id,
+  //         product: {
+  //           _id: product._id,
+  //           name: product.name,
+  //           price: product.price,
+  //           images: product.images,
+  //           stock: product.stock,
+  //         },
+  //         qty,
+  //       },
+  //     ];
+  //   });
+  // };
+
+  // const setCartQty = (productId, qty) => {
+  //   setCart((prev) => {
+  //     if (qty <= 0) return prev.filter((p) => p.productId !== productId);
+  //     return prev.map((p) => (p.productId === productId ? { ...p, qty } : p));
+  //   });
+  // };
+
+  // const removeFromCart = (productId) => {
+  //   setCart((prev) => prev.filter((p) => p.productId !== productId));
+  // };
+
+  // const clearCart = () => setCart([]);
+  // --- CART HELPERS (with backend sync) ---
+const API_BASE = "http://localhost:5000/api/cart"; // change port if needed
+
+const getAuthHeader = () => {
+  const token = localStorage.getItem("token"); // store token during login
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
+const syncCartFromBackend = async () => {
+  try {
+    const res = await fetch(API_BASE, { headers: getAuthHeader() });
+    const data = await res.json();
+    if (data.success) {
+      setCart(
+        data.cartItems.map((item) => ({
+          productId: item.productId._id,
+          product: item.productId,
+          qty: item.quantity,
+        }))
+      );
+    }
+  } catch (err) {
+    console.error("Failed to sync cart:", err);
+  }
+};
+
+useEffect(() => {
+  if (user?.phone) {
+    syncCartFromBackend();
+  }
+}, [user?.phone]);
+
+const addToCart = async (product, qty = 1) => {
+  setCart((prev) => {
+    const idx = prev.findIndex((p) => p.productId === product._id);
+    if (idx > -1) {
+      const updated = [...prev];
+      updated[idx] = { ...updated[idx], qty: updated[idx].qty + qty };
+      return updated;
+    }
+    return [
+      ...prev,
+      {
+        productId: product._id,
+        product,
+        qty,
+      },
+    ];
+  });
+
+  // 🔥 Send to backend
+  try {
+    await fetch(`${API_BASE}/add`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeader(),
+      },
+      body: JSON.stringify({ productId: product._id, quantity: qty }),
     });
-  };
+  } catch (err) {
+    console.error("Failed to add to backend cart:", err);
+  }
+};
+const setCartQty = async (productId, qty) => {
+  setCart((prev) => {
+    if (qty <= 0) return prev.filter((p) => p.productId !== productId);
+    return prev.map((p) => (p.productId === productId ? { ...p, qty } : p));
+  });
 
-  const setCartQty = (productId, qty) => {
-    setCart((prev) => {
-      if (qty <= 0) return prev.filter((p) => p.productId !== productId);
-      return prev.map((p) => (p.productId === productId ? { ...p, qty } : p));
+  // optional: update backend if you want quantity sync
+  try {
+    await fetch(`${API_BASE}/add`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...getAuthHeader(),
+      },
+      body: JSON.stringify({ productId, quantity: qty }),
     });
-  };
+  } catch (err) {
+    console.error("Failed to update qty in backend:", err);
+  }
+};
 
-  const removeFromCart = (productId) => {
-    setCart((prev) => prev.filter((p) => p.productId !== productId));
-  };
 
-  const clearCart = () => setCart([]);
+const removeFromCart = async (productId) => {
+  setCart((prev) => prev.filter((p) => p.productId !== productId));
+  try {
+    await fetch(`${API_BASE}/${productId}`, {
+      method: "DELETE",
+      headers: getAuthHeader(),
+    });
+  } catch (err) {
+    console.error("Failed to remove from backend cart:", err);
+  }
+};
+
+const clearCart = async () => {
+  setCart([]);
+  // optional: if you want to clear backend cart too
+  try {
+    const res = await fetch(API_BASE, {
+      headers: getAuthHeader(),
+    });
+    const data = await res.json();
+    if (data.success && data.cartItems) {
+      await Promise.all(
+        data.cartItems.map((item) =>
+          fetch(`${API_BASE}/${item.productId._id}`, {
+            method: "DELETE",
+            headers: getAuthHeader(),
+          })
+        )
+      );
+    }
+  } catch (err) {
+    console.error("Failed to clear backend cart:", err);
+  }
+};
+
 
   // --- LOGIN MODAL STATE ---
   const [showLoginModal, setShowLoginModal] = useState(false);
