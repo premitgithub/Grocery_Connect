@@ -5,6 +5,9 @@ import MainLayout from "../layouts/MainLayout";
 import AccountRoutes from "./AccountRoutes";
 import ProductRoutes from "./ProductRoutes";
 import CartPage from "../pages/Cart/CartPage";
+import ShopRoutes from "./ShopRoutes";
+import SearchResultsPage from "../pages/SearchResultsPage";
+
 
 
 const AppRoutes = () => {
@@ -15,6 +18,8 @@ const AppRoutes = () => {
         <Route path="/account/*" element={<AccountRoutes />} />
         <Route path="/products/*" element={<ProductRoutes />} />
         <Route path="/cart" element={<CartPage />} />
+        <Route path="/*" element={<ShopRoutes />} />
+        <Route path="/search" element={<SearchResultsPage />} />
       </Route>
     </Routes>
   );

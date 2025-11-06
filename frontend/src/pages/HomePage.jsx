@@ -62,8 +62,8 @@ const HomePage = () => {
         {/* Conditionally show CTA only if shop owner */}
         {user?.isShopOwner && <CTASection />}
 
-        <AboutSection />
-        <Footer />
+        {/* <AboutSection />
+        <Footer /> */}
       </motion.div>
 
       {/* Loader Overlay */}

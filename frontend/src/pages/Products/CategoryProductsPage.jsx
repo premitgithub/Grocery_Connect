@@ -32,12 +32,18 @@ const CategoryProductsPage = () => {
   }, []);
 
   const filteredProducts = products
-    .filter(
-      (p) =>
-        p.category &&
-        p.category.toLowerCase() ===
-          decodeURIComponent(categoryName).toLowerCase()
-    )
+    .filter((p) => {
+      const normalize = (str) =>
+        str
+          ?.toLowerCase()
+          .replace(/[\s_-]+/g, "") // remove spaces, underscores, hyphens
+          .trim();
+
+      return (
+        normalize(p.category) === normalize(decodeURIComponent(categoryName))
+      );
+    })
+
     .sort((a, b) => {
       if (sortOption === "lowToHigh") return a.price - b.price;
       if (sortOption === "highToLow") return b.price - a.price;

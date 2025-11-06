@@ -1,26 +1,21 @@
 import { ArrowRight, ArrowDown } from "lucide-react";
+import { Link } from "react-router-dom";
+import AnimatedHeroText from './../../animations/AnimatedHeroText';
+
 
 const HeroSection = () => {
   return (
     <section className="relative flex flex-col md:flex-row items-center justify-between px-6 sm:px-10 md:px-20 py-12 md:py-20 bg-gradient-to-r from-teal-100 via-white to-emerald-100 overflow-hidden">
       {/* Left Text Section */}
       <div className="max-w-2xl text-center md:text-left space-y-6 md:space-y-8">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-teal-900 leading-snug">
-          Supporting <span className="text-teal-600">Local Grocery Stores</span>{" "}
-          in the Digital Era is what we{" "}
-          <span className="text-teal-600">AIM FOR</span>
-        </h1>
-
-        <p className="text-gray-700 text-base sm:text-lg md:text-xl leading-relaxed">
-          Grocery Connect helps small grocery shops reach more customers —
-          allowing users to find nearby stores that sell their favorite
-          products.
-        </p>
+        <AnimatedHeroText/>
 
         <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-4 sm:gap-6 pt-4">
-          <button className="px-6 py-4 bg-teal-600 text-white text-lg sm:text-xl font-semibold rounded-3xl hover:bg-teal-800 transition duration-500 shadow-md">
-            Explore Shops
-          </button>
+          <Link to="/shops">
+            <button className="px-6 py-4 bg-teal-600 text-white text-lg sm:text-xl font-semibold rounded-3xl hover:bg-teal-800 transition cursor-pointer duration-500 shadow-md">
+              Explore Shops
+            </button>
+          </Link>
           <button className="px-6 py-4 text-lg sm:text-xl border border-teal-600 text-teal-700 font-semibold rounded-3xl hover:bg-white hover:shadow-md transition duration-500">
             Learn More
           </button>
