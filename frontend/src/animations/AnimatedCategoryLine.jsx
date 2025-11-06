@@ -1,70 +1,69 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 const AnimatedCategoryLine = ({ categoryName }) => {
-  const text = `Explore and enjoy the freshest, hand-picked ${decodeURIComponent(
+  const fullText = `Explore and enjoy the freshest, hand-picked ${decodeURIComponent(
     categoryName
   ).toLowerCase()} from trusted local shops — delivered to your doorstep in minutes!`;
 
-  const words = text.split(" ");
-  const [show, setShow] = useState(true);
+  const [displayedText, setDisplayedText] = useState("");
+  const [isTyping, setIsTyping] = useState(true);
 
   useEffect(() => {
-    // Stay visible longer (5s), disappear+reappear cycle faster
-    const interval = setInterval(() => setShow((prev) => !prev), 3000);
-    return () => clearInterval(interval);
-  }, []);
+    let i = 0;
+    let typingInterval;
+    let eraseTimeout;
+    let typingTimeout;
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.08, delayChildren: 0.1 }, // faster reappear
-    },
-    exit: {
-      opacity: 0,
-      transition: { staggerChildren: 0.12, staggerDirection: -1 }, // slower smooth fade
-    },
-  };
+    const startTyping = () => {
+      setIsTyping(true);
+      typingInterval = setInterval(() => {
+        setDisplayedText(fullText.slice(0, i + 1));
+        i++;
+        if (i === fullText.length) {
+          clearInterval(typingInterval);
+          eraseTimeout = setTimeout(startErasing, 2000); // pause before erasing
+        }
+      }, 60); // typing speed
+    };
 
-  const wordVariants = {
-    hidden: { opacity: 0, y: 8 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.25, ease: "easeOut" },
-    },
-    exit: {
-      opacity: 0,
-      y: -8,
-      transition: { duration: 0.5, ease: "easeInOut" },
-    },
-  };
+    const startErasing = () => {
+      setIsTyping(false);
+      typingInterval = setInterval(() => {
+        setDisplayedText(fullText.slice(0, i - 1));
+        i--;
+        if (i === 0) {
+          clearInterval(typingInterval);
+          typingTimeout = setTimeout(startTyping, 1000); // pause before typing again
+        }
+      }, 40); // erasing speed
+    };
+
+    startTyping();
+
+    return () => {
+      clearInterval(typingInterval);
+      clearTimeout(eraseTimeout);
+      clearTimeout(typingTimeout);
+    };
+  }, [categoryName]); // re-run if category changes
 
   return (
-    <div
-      className="text-gray-600 mt-6 text-xl flex flex-wrap justify-center items-center relative"
-      style={{ minHeight: "2.5rem" }} // prevents movement
+    <motion.p
+      className="text-gray-600 text-lg sm:text-xl mt-6 max-w-3xl mx-auto font-medium tracking-wide text-center leading-relaxed"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6 }}
     >
-      <AnimatePresence mode="wait">
-        {show && (
-          <motion.div
-            key="text"
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            className="flex flex-wrap justify-center absolute top-0 left-0 w-full"
-          >
-            {words.map((word, i) => (
-              <motion.span key={i} variants={wordVariants} className="mr-1">
-                {word}
-              </motion.span>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+      {displayedText}
+      <motion.span
+        animate={{ opacity: [0, 1, 0] }}
+        transition={{ repeat: Infinity, duration: 0.8 }}
+        className="text-teal-600"
+      >
+        |
+      </motion.span>
+    </motion.p>
   );
 };
 

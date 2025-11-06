@@ -71,7 +71,7 @@ const TopProductsSection = () => {
         >
           {[...products, ...products].map((product, index) => (
             <motion.div
-              key={product._id || index}
+              key={`${product._id || "no-id"}-${index}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: index * 0.05 }}
