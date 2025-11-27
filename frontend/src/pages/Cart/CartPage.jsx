@@ -8,9 +8,8 @@ import toast from "react-hot-toast";
 const CartPage = () => {
   const {
     cart,
-    setCartQty,
     removeFromCart,
-    clearCart,
+    clearCartItems,
     cartSubtotal,
     totalItems,
     requireLogin,
@@ -90,7 +89,7 @@ const CartPage = () => {
                 Proceed to Checkout
               </button>
               <button
-                onClick={() => clearCart()}
+                onClick={() => clearCartItems()}
                 className="w-full border text-xl border-gray-300 py-5 rounded-lg cursor-pointer text-gray-700 hover:bg-gray-200 duration-400"
               >
                 Clear Cart

@@ -1,15 +1,24 @@
-import React from "react";
+import React, { useContext } from "react";
 import { FiTrash2 } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-
-const CartItem = ({ item, onQtyChange, onRemove }) => {
+import { UserContext } from "../../context/UserContext.jsx";
+// import { set } from "mongoose";
+const CartItem = ({ item, onRemove }) => {
   const { product, qty } = item;
   const navigate = useNavigate();
+
+  const { decreaseCartQuantity, increaseCartQuantity } = useContext(UserContext);
 
   const handleNameClick = () => {
     const encodedName = encodeURIComponent(product.name);
     navigate(`/products/${encodedName}`);
   };
+  const decreaseQtyChange = () => {
+    decreaseCartQuantity(item.productId, item.qty)
+  }
+  const increaseQtyChange = () => {
+    increaseCartQuantity(item.productId, item.qty)
+  }
 
   return (
     <div className="flex items-start gap-4 p-8 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition">
@@ -30,7 +39,7 @@ const CartItem = ({ item, onQtyChange, onRemove }) => {
 
         <div className="flex items-center gap-3">
           <button
-            onClick={() => onQtyChange(Math.max(0, qty - 1))}
+            onClick={() => decreaseQtyChange()}
             className="px-3 py-1 cursor-pointer border rounded hover:bg-gray-100"
             aria-label="decrease"
           >
@@ -38,7 +47,7 @@ const CartItem = ({ item, onQtyChange, onRemove }) => {
           </button>
           <div className="px-4 py-1 border rounded">{qty}</div>
           <button
-            onClick={() => onQtyChange(qty + 1)}
+            onClick={() => increaseQtyChange()}
             className="px-3 py-1 bg-teal-600 cursor-pointer text-white rounded hover:bg-teal-700"
             aria-label="increase"
           >

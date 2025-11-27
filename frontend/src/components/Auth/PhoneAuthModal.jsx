@@ -6,7 +6,7 @@ import ShopOwnerPopup from "../ShopOwnerPopUp/ShopOwnerPopup";
 import toast from "react-hot-toast";
 
 const PhoneAuthModal = ({ onClose }) => {
-  const { setUser } = useContext(UserContext);
+  const { setUser, loadCartFromDataBase } = useContext(UserContext);
   const [step, setStep] = useState("phone"); 
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
@@ -37,6 +37,7 @@ const PhoneAuthModal = ({ onClose }) => {
       } else {
         toast.error(data.message || "Failed to send OTP");
       }
+      await loadCartFromDataBase();
     } catch (error) {
       toast.error("Something went wrong!");
       console.error(error);
@@ -66,7 +67,6 @@ const PhoneAuthModal = ({ onClose }) => {
         // Save token and user in localStorage for session persistence
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
-
         // OTP verified — show role selection
         if( data.isNewUser) {
           setShowRolePopup(true);
@@ -79,6 +79,7 @@ const PhoneAuthModal = ({ onClose }) => {
         toast.error(data.message || "Invalid OTP");
       }
     } catch (error) {
+      console.log(error)
       toast.error("Something went wrong!");
     } finally {
       setLoading(false);

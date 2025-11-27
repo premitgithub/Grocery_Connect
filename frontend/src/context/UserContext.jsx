@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect, useMemo } from "react";
 import { defaultProfile, defaultAddress } from "../data/defaultData";
 import toast from "react-hot-toast";
+import { addToCartApi, fetchFromCartApi, removeFromCartApi, reduceCartItemApi,clearCartItemsApi } from "../api/cartApi"
 
 export const UserContext = createContext();
 
@@ -40,10 +41,13 @@ export const UserProvider = ({ children }) => {
 
   // --- CART STATE ---
   // Array of { productId, product (snapshot), qty }
-  const [cart, setCart] = useState(() => {
-    const stored = localStorage.getItem("cart");
-    return stored ? JSON.parse(stored) : [];
-  });
+  const [cart, setCart] = useState([]);
+
+  useEffect(() => {
+    if (user?.phone) {
+      loadCartFromDataBase();
+    }
+  }, [user.phone]);
 
   // --- CART DERIVED VALUES ---
   const totalItems = useMemo(
@@ -84,14 +88,15 @@ export const UserProvider = ({ children }) => {
     localStorage.setItem("addresses", JSON.stringify(addresses));
   }, [addresses]);
 
-  useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
+  // useEffect(() => {
+  //   localStorage.setItem("cart", JSON.stringify(cart));
+  // }, [cart]);
 
   // --- Helper: update user and persist immediately ---
-  const updateUserData = (data) => {
+  const updateUserData = async(data) => {
     setUser(data);
     localStorage.setItem("user", JSON.stringify(data));
+    
   };
 
   // --- Helper: add new address ---
@@ -130,43 +135,72 @@ export const UserProvider = ({ children }) => {
   };
 
   // --- CART HELPERS ---
-  const addToCart = (product, qty = 1) => {
-    setCart((prev) => {
-      const idx = prev.findIndex((p) => p.productId === product._id);
-      if (idx > -1) {
-        const updated = [...prev];
-        updated[idx] = { ...updated[idx], qty: updated[idx].qty + qty };
-        return updated;
-      }
-      return [
-        ...prev,
-        {
-          productId: product._id,
-          product: {
-            _id: product._id,
-            name: product.name,
-            price: product.price,
-            images: product.images,
-            stock: product.stock,
-          },
-          qty,
-        },
-      ];
-    });
+
+  const addToCart = async ( product ) => {
+    if (!user?.phone) {
+      toast.error("Please log in first");
+      setShowLoginModal(true);
+      return;
+    }
+
+    try {
+      const res = await addToCartApi(user.phone, product);
+      // console.log("Phone: ", user.phone)
+      // console.log("Product: ", product)
+      
+      // const updatedCart = res;
+      // console.log(res);
+      // setCart(updatedCart);
+      await loadCartFromDataBase();
+      toast.success("Added to cart!");
+
+    } catch (error) {
+      console.error("Add to cart failed:", error);
+      toast.error("Something went wrong");
+    }
   };
 
-  const setCartQty = (productId, qty) => {
-    setCart((prev) => {
-      if (qty <= 0) return prev.filter((p) => p.productId !== productId);
-      return prev.map((p) => (p.productId === productId ? { ...p, qty } : p));
-    });
+  const loadCartFromDataBase = async () => {
+    if (!user?.phone) return;
+    try {
+      const data = await fetchFromCartApi(user.phone);
+
+      const formatted = data.map((item) => ({
+      productId: item.productId._id,
+      qty: item.quantity,
+      product: item.productId,   // full product details after populate()
+    }));
+    setCart(formatted);
+
+    } catch (error) {
+      console.error("Failed to load cart: ", error);
+    }
   };
 
-  const removeFromCart = (productId) => {
-    setCart((prev) => prev.filter((p) => p.productId !== productId));
+
+  const increaseCartQuantity = async (productId, qty) => {
+
+    await addToCartApi(user.phone, productId);
+    await loadCartFromDataBase();
   };
 
-  const clearCart = () => setCart([]);
+  const decreaseCartQuantity = async (productId, qty ) => {
+    if (qty === 1){
+      return removeFromCart( productId );
+    }
+    await reduceCartItemApi( user.phone, productId );
+    await loadCartFromDataBase();
+  }
+
+  const removeFromCart = async (productId) => {
+    await removeFromCartApi(user.phone, productId);
+    await loadCartFromDataBase();
+  };
+
+  const clearCartItems = async (phone) => {
+    await clearCartItemsApi(user.phone);
+    await loadCartFromDataBase();
+  };
 
   // --- LOGIN MODAL STATE ---
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -203,9 +237,11 @@ export const UserProvider = ({ children }) => {
         cart,
         setCart,
         addToCart,
-        setCartQty,
+        increaseCartQuantity,
+        decreaseCartQuantity,
         removeFromCart,
-        clearCart,
+        clearCartItems,
+        loadCartFromDataBase,
         totalItems,
         cartSubtotal,
         showLoginModal,

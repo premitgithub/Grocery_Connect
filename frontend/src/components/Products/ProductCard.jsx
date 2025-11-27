@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from 'react-router-dom';
 
 const ProductCard = ({ product, onClick }) => {
-  const { addToCart, setCartQty, removeFromCart, cart } =
+  const { addToCart, decreaseCartQuantity, increaseCartQuantity, cart } =
     useContext(UserContext);
   const [adding, setAdding] = useState(false);
 
@@ -27,7 +27,7 @@ const ProductCard = ({ product, onClick }) => {
 
   const handleIncrease = (e) => {
     e.stopPropagation();
-    addToCart(product, 1);
+    increaseCartQuantity(product, 1);
     toast.success(`+1 ${product.name}`, { id: `cart-${product._id}` });
   };
 
@@ -36,13 +36,13 @@ const ProductCard = ({ product, onClick }) => {
 
     if (qtyInCart > 1) {
       // reduce quantity
-      setCartQty(product._id, qtyInCart - 1);
+      decreaseCartQuantity(product._id, qtyInCart);
       toast.success(`${product.name} quantity reduced`, {
         id: `cart-${product._id}`,
       });
     } else if (qtyInCart === 1) {
       // remove from cart entirely
-      removeFromCart(product._id);
+      decreaseCartQuantity(product._id, qtyInCart);
       toast.error(`${product.name} removed from cart`, {
         id: `cart-${product._id}`,
       });
