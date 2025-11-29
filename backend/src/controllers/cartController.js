@@ -3,11 +3,11 @@ import Product from "../models/Product.js";
 
 export const getCartItems = async (req, res) => {
     try {
-        const { phone } = req.body;
-        const cartProducts = await Cart.find({ userId: phone }).populate("productId");
+        const { phoneNumber } = req.body;
+        const cartProducts = await Cart.find({ userId: phoneNumber }).populate("productId");
         return res.status(200).json(cartProducts);
 
-    } catch (error){
+    } catch (error) {
         console.error("Error fetching products from Cart:", error);
         return res.status(500).json({ message: "Server error while fetching products from Cart" });
     }
@@ -15,10 +15,10 @@ export const getCartItems = async (req, res) => {
 
 export const addCartItems = async (req, res) => {
     try {
-        const { productId, phone } = req.body;
-        const cartProduct = await Cart.findOne({productId, userId: phone});
+        const { productId, phoneNumber } = req.body;
+        const cartProduct = await Cart.findOne({ productId, userId: phoneNumber });
 
-        if(cartProduct){
+        if (cartProduct) {
             cartProduct.quantity += 1
             await cartProduct.save();
 
@@ -30,7 +30,7 @@ export const addCartItems = async (req, res) => {
         }
 
         const newItem = await Cart.create({
-            userId: phone,
+            userId: phoneNumber,
             productId: productId,
             quantity: 1
         })
@@ -49,17 +49,17 @@ export const addCartItems = async (req, res) => {
 export const reduceCartItems = async (req, res) => {
     try {
 
-        const { productId, phone } = req.body;
-        const cartProduct = await Cart.findOne({ productId, userId: phone });
+        const { productId, phoneNumber } = req.body;
+        const cartProduct = await Cart.findOne({ productId, userId: phoneNumber });
 
-        if(!cartProduct){
+        if (!cartProduct) {
             return res.json({
                 success: false,
                 message: "No such item in the cart."
             });
         }
-        if(cartProduct.quantity === 1){
-            await Cart.deleteOne({ productId: productId, userId: phone});
+        if (cartProduct.quantity === 1) {
+            await Cart.deleteOne({ productId: productId, userId: phoneNumber });
 
             return res.json({
                 success: true,
@@ -88,21 +88,21 @@ export const reduceCartItems = async (req, res) => {
 export const removeCartItems = async (req, res) => {
     try {
         console.log(req.body);
-        const { phone, productId } = req.body;
+        const { phoneNumber, productId } = req.body;
 
         console.log(productId);
-        console.log(phone);
+        console.log(phoneNumber);
 
-        const cartProduct = await Cart.findOne({ productId, userId: phone });
+        const cartProduct = await Cart.findOne({ productId, userId: phoneNumber });
 
-        if(!cartProduct){
+        if (!cartProduct) {
             return res.json({
                 success: false,
                 message: "No such product exists."
             });
         }
-        
-        await Cart.deleteOne({ productId: productId, userId: phone });
+
+        await Cart.deleteOne({ productId: productId, userId: phoneNumber });
 
         return res.json({
             success: true,
@@ -120,13 +120,13 @@ export const removeCartItems = async (req, res) => {
 
 export const clearCartItems = async (req, res) => {
     try {
-        const { phone } = req.body;
+        const { phoneNumber } = req.body;
 
         const product = await Cart.findOne({
-            userId: phone
+            userId: phoneNumber
         })
 
-        if( !product ){
+        if (!product) {
             return res.json({
                 success: false,
                 message: "No such Item to delete"
@@ -134,7 +134,7 @@ export const clearCartItems = async (req, res) => {
         };
 
         await Cart.deleteMany({
-            userId: phone
+            userId: phoneNumber
         })
 
         return res.json({

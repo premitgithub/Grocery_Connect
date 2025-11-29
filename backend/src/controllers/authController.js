@@ -6,21 +6,21 @@ const otpStore = {}; // temporary in-memory store
 // ✅ SEND OTP
 export const sendOtp = async (req, res) => {
   try {
-    const { phone } = req.body;
-    if (!phone) return res.status(400).json({ message: "Phone required" });
+    const { phoneNumber } = req.body;
+    if (!phoneNumber) return res.status(400).json({ message: "Phone number required" });
 
     // generate 6-digit otp
     const otp = Math.floor(100000 + Math.random() * 900000);
 
     // store otp with expiry
-    otpStore[phone] = {
+    otpStore[phoneNumber] = {
       otp,
       expiresAt: Date.now() + 2 * 60 * 1000, // 2 minutes expiry
     };
 
-    console.log(`OTP for ${phone}: ${otp}`); // For testing, remove later
+    console.log(`OTP for ${phoneNumber}: ${otp}`); // For testing, remove later
 
-    return res.json({ message: "OTP sent successfully" , otp});
+    return res.json({ message: "OTP sent successfully", otp });
   } catch (err) {
     console.error("Send OTP Error:", err);
     res.status(500).json({ message: "Server error" });
@@ -30,9 +30,9 @@ export const sendOtp = async (req, res) => {
 // ✅ VERIFY OTP
 export const verifyOtp = async (req, res) => {
   try {
-    const { phone, otp } = req.body;
+    const { phoneNumber, otp } = req.body;
 
-    const record = otpStore[phone];
+    const record = otpStore[phoneNumber];
     if (!record)
       return res.status(400).json({ message: "No OTP found. Please resend." });
 
@@ -43,21 +43,21 @@ export const verifyOtp = async (req, res) => {
       return res.status(400).json({ message: "Invalid OTP" });
 
     // ✅ Find or create user
-    let user = await User.findOne({ phone });
+    let user = await User.findOne({ phoneNumber });
     let isNewUser = false;
     if (!user) {
-      user = await User.create({ phone, verified: true });
+      user = await User.create({ phoneNumber, verified: true });
       isNewUser = true;
-    }else {
+    } else {
       user.verified = true;
       await user.save();
     }
 
-    delete otpStore[phone];
+    delete otpStore[phoneNumber];
 
     // ✅ Generate JWT token
     const token = jwt.sign(
-      { id: user._id, phone: user.phone },
+      { id: user._id, phoneNumber: user.phoneNumber },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES || "7d" }
     );
@@ -72,14 +72,14 @@ export const verifyOtp = async (req, res) => {
 // ✅ SET USER ROLE
 export const setUserRole = async (req, res) => {
   try {
-    const { phone, isShopOwner } = req.body;
+    const { phoneNumber, isShopOwner } = req.body;
 
-    if (!phone) {
+    if (!phoneNumber) {
       return res.status(400).json({ message: "Phone number required" });
     }
 
     const user = await User.findOneAndUpdate(
-      { phone },
+      { phoneNumber },
       { isShopOwner },
       { new: true } // return updated document
     );
@@ -95,3 +95,28 @@ export const setUserRole = async (req, res) => {
   }
 };
 
+// ✅ UPDATE USER PROFILE
+export const updateProfile = async (req, res) => {
+  try {
+    const { phoneNumber, name, email, altPhone } = req.body;
+
+    if (!phoneNumber) {
+      return res.status(400).json({ message: "Phone number required" });
+    }
+
+    const user = await User.findOneAndUpdate(
+      { phoneNumber },
+      { name, email, altPhone },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ message: "Profile updated successfully", user });
+  } catch (err) {
+    console.error("Update Profile Error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};

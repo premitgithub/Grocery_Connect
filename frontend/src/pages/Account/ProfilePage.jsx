@@ -7,15 +7,15 @@ import { defaultProfile } from "../../data/defaultData";
 import toast from "react-hot-toast"; // ✅ import toast
 
 const ProfilePage = () => {
-  const { profile, setProfile, address, addresses } = useContext(UserContext);
+  const { profile, setProfile, address, addresses, updateUserProfile } = useContext(UserContext);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setProfile({ ...profile, [e.target.name]: e.target.value });
   };
 
-  const success = () => {
-    toast.success("Profile saved successfully 🎉");
+  const handleSave = async () => {
+    await updateUserProfile(profile);
   };
 
   return (
@@ -35,8 +35,8 @@ const ProfilePage = () => {
 
         <ProfileField
           label="Phone Number (Verified)"
-          name="phone"
-          value={profile.phone}
+          name="phoneNumber"
+          value={profile.phoneNumber}
           editable={false}
         />
 
@@ -75,7 +75,7 @@ const ProfilePage = () => {
       )}
       <div className="flex justify-center sm:justify-end">
         <button
-          onClick={success}
+          onClick={handleSave}
           className="
       mt-4
       px-8

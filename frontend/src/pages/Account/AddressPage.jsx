@@ -36,7 +36,7 @@ const AddressPage = () => {
       }
     };
 
-    if (user?.phone) { // Fetch only if logged in
+    if (user?.phoneNumber) { // Fetch only if logged in
       fetchAddresses();
     }
   }, [user, setAddresses]);
