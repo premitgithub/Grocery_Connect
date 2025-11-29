@@ -5,47 +5,41 @@ import ShopHeader from "../../components/IndividualShops/ShopHeader";
 import ShopImageSection from "../../components/IndividualShops/ShopImageSection";
 import ShopInfoSection from "../../components/IndividualShops/ShopInfoSection";
 import ShopProductsPreview from "../../components/IndividualShops/ShopProductsPreview";
-import { shops as allShops } from "../../data/dummyShops"; // adjust path if needed
+import axios from "axios";
 
 const ShopDetailsPage = () => {
-  // const { id } = useParams();
-  // const navigate = useNavigate();
-  // const [shop, setShop] = useState(null);
-
-  // useEffect(() => {
-  //   // Find shop by id or decoded shopName
-  //   const decoded = decodeURIComponent(id || "");
-  //   const found = allShops.find(
-  //     (s) => s._id === id || s.id === id || s.shopName === decoded
-  //   );
-  //   setShop(found || null);
-  //   window.scrollTo(0, 0);
-  // }, [id]);
-
   const { id } = useParams();
   const navigate = useNavigate();
   const [shop, setShop] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Normalize and find by any possible match (id, name, slug)
-    const decoded = decodeURIComponent(id || "").toLowerCase();
+    const fetchShopAndProducts = async () => {
+      try {
+        const shopRes = await axios.get(`http://localhost:5000/api/shops/${id}`);
+        setShop(shopRes.data);
 
-    const found = allShops.find((s) => {
-      const normalizedName = s.shopName.toLowerCase().replace(/\s+/g, "-");
-      return (
-        s._id?.toString() === id ||
-        s.id?.toString() === id ||
-        normalizedName === decoded ||
-        s.shopName.toLowerCase() === decoded
-      );
-    });
+        const productsRes = await axios.get(`http://localhost:5000/api/products?shopId=${id}`);
+        setProducts(productsRes.data);
+      } catch (error) {
+        console.error("Error fetching shop details:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    setShop(found || null);
+    if (id) {
+      fetchShopAndProducts();
+    }
     window.scrollTo(0, 0);
   }, [id]);
 
-
   // Conditional render when shop is null (loading or not found)
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
+
   if (!shop) {
     return (
       <div className="min-h-screen flex items-center justify-center px-6">
@@ -65,7 +59,7 @@ const ShopDetailsPage = () => {
   // Main UI render after shop is loaded
   return (
     <section className="px-6 sm:px-10 md:px-14 py-12 bg-gradient-to-b from-emerald-50 to-teal-50 min-h-screen">
-      <ShopHeader shopName={shop.shopName} />
+      <ShopHeader shopName={shop.name} />
 
       {/* Wrapper container with padding and background */}
       <motion.div
@@ -76,7 +70,7 @@ const ShopDetailsPage = () => {
         style={{ boxShadow: "0 25px 50px rgba(0, 0, 0, 0.1)" }}
       >
         {/* Just ShopImageSection directly */}
-        <ShopImageSection shopImage={shop.shopImage} shopName={shop.shopName} />
+        <ShopImageSection shopImage={shop.image} shopName={shop.name} />
 
         {/* Info container remains as-is */}
         <div className="flex-grow rounded-3xl bg-white shadow-xl p-8 flex flex-col justify-center">
@@ -84,7 +78,7 @@ const ShopDetailsPage = () => {
         </div>
       </motion.div>
 
-      <ShopProductsPreview shop={shop} />
+      <ShopProductsPreview shop={shop} products={products} />
     </section>
   );
 };

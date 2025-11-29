@@ -7,6 +7,7 @@ import ProductRoutes from "./ProductRoutes";
 import CartPage from "../pages/Cart/CartPage";
 import ShopRoutes from "./ShopRoutes";
 import SearchResultsPage from "../pages/SearchResultsPage";
+import AddProductPage from "../pages/Shopkeeper/AddProductPage";
 
 
 
@@ -20,6 +21,7 @@ const AppRoutes = () => {
         <Route path="/cart" element={<CartPage />} />
         <Route path="/*" element={<ShopRoutes />} />
         <Route path="/search" element={<SearchResultsPage />} />
+        <Route path="/shop/add-product" element={<AddProductPage />} />
       </Route>
     </Routes>
   );

@@ -4,6 +4,8 @@ import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js"
+import shopRoutes from "./routes/shopRoutes.js";
+import addressRoutes from "./routes/addressRoutes.js";
 
 const app = express();
 
@@ -18,5 +20,7 @@ connectDB();
 app.use("/api", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
+app.use("/api/shops", shopRoutes);
+app.use("/api/addresses", addressRoutes);
 
 export default app;

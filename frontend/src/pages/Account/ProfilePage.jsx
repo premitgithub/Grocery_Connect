@@ -7,7 +7,7 @@ import { defaultProfile } from "../../data/defaultData";
 import toast from "react-hot-toast"; // ✅ import toast
 
 const ProfilePage = () => {
-  const { profile, setProfile, address } = useContext(UserContext);
+  const { profile, setProfile, address, addresses } = useContext(UserContext);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -57,10 +57,22 @@ const ProfilePage = () => {
         />
       </div>
 
-      <AddressCard
-        address={address}
-        onChangeClick={() => navigate("/account/address")}
-      />
+      {addresses.length > 0 ? (
+        <AddressCard
+          address={address || addresses[0]}
+          onChangeClick={() => navigate("/account/address")}
+        />
+      ) : (
+        <div className="border rounded-xl p-6 flex flex-col items-center justify-center space-y-4 bg-gray-50">
+          <p className="text-gray-500 text-lg">No address found.</p>
+          <button
+            onClick={() => navigate("/account/address")}
+            className="px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition shadow-md"
+          >
+            + Add Address
+          </button>
+        </div>
+      )}
       <div className="flex justify-center sm:justify-end">
         <button
           onClick={success}

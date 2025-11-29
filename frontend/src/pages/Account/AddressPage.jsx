@@ -1,12 +1,13 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../context/UserContext";
 import { FiTrash2 } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const AddressPage = () => {
-  const { address, setAddress, addresses, setAddresses } =
-    useContext(UserContext);
+  const { user, address, setAddress, addresses, setAddresses } = useContext(UserContext);
   const [showForm, setShowForm] = useState(false);
   const [newAddress, setNewAddress] = useState({
     apartmentNo: "",
@@ -18,28 +19,87 @@ const AddressPage = () => {
 
   const navigate = useNavigate();
 
+  // Fetch addresses on mount
+  useEffect(() => {
+    const fetchAddresses = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const res = await axios.get("http://localhost:5000/api/addresses", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setAddresses(res.data);
+      } catch (error) {
+        console.error("Error fetching addresses:", error);
+        toast.error("Failed to load addresses");
+      }
+    };
+
+    if (user?.phone) { // Fetch only if logged in
+      fetchAddresses();
+    }
+  }, [user, setAddresses]);
+
   const handleSelect = (addr) => {
     setAddress(addr);
     localStorage.setItem("address", JSON.stringify(addr));
     navigate("/account/profile");
   };
 
-  const handleDelete = (index) => {
-    const updated = addresses.filter((_, i) => i !== index);
-    setAddresses(updated);
-    localStorage.setItem("addresses", JSON.stringify(updated));
+  const handleDelete = async (index, id) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.delete(`http://localhost:5000/api/addresses/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const updated = addresses.filter((_, i) => i !== index);
+      setAddresses(updated);
+      toast.success("Address deleted successfully");
+
+      // If deleted address was selected, clear selection
+      if (address && address._id === id) {
+        setAddress(null);
+        localStorage.removeItem("address");
+      }
+
+    } catch (error) {
+      console.error("Error deleting address:", error);
+      toast.error("Failed to delete address");
+    }
   };
 
-  const handleAdd = (e) => {
+  const handleAdd = async (e) => {
     e.preventDefault();
-    if (!newAddress.area.trim()) return;
+    if (!newAddress.area.trim() || !newAddress.pincode.trim()) {
+      toast.error("Area and Pincode are required");
+      return;
+    }
 
-    const updated = [...addresses, newAddress];
-    setAddresses(updated);
-    localStorage.setItem("addresses", JSON.stringify(updated));
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.post("http://localhost:5000/api/addresses", newAddress, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-    setNewAddress({ apartmentNo: "", floor: "", landmark: "", area: "" , pincode: ""});
-    setShowForm(false);
+      const newAddr = res.data;
+      setAddresses([...addresses, newAddr]);
+
+      // If this is the first address, set it as default
+      if (addresses.length === 0) {
+        setAddress(newAddr);
+        localStorage.setItem("address", JSON.stringify(newAddr));
+      }
+
+      toast.success("Address added successfully!");
+
+      setNewAddress({ apartmentNo: "", floor: "", landmark: "", area: "", pincode: "" });
+      setShowForm(false);
+    } catch (error) {
+      console.error("Error adding address:", error);
+      toast.error("Failed to add address");
+    }
   };
 
   return (
@@ -144,11 +204,10 @@ const AddressPage = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
-              className={`border rounded-xl p-6 text-lg flex justify-between items-start shadow-sm hover:shadow-md transition ${
-                address.area === addr.area
-                  ? "border-teal-500"
-                  : "border-gray-300"
-              }`}
+              className={`border rounded-xl p-6 text-lg flex justify-between items-start shadow-sm hover:shadow-md transition ${address?._id === addr._id
+                ? "border-teal-500"
+                : "border-gray-300"
+                }`}
             >
               <div>
                 <p className="font-semibold">{addr.apartmentNo}</p>
@@ -163,11 +222,11 @@ const AddressPage = () => {
                   onClick={() => handleSelect(addr)}
                   className="bg-teal-600 text-white px-4 cursor-pointer duration-400 py-2 rounded-xl hover:bg-teal-700 transition"
                 >
-                  {address.area === addr.area ? "Selected" : "Select"}
+                  {address?._id === addr._id ? "Selected" : "Select"}
                 </button>
 
                 <button
-                  onClick={() => handleDelete(i)}
+                  onClick={() => handleDelete(i, addr._id)}
                   className="flex justify-center text-2xl text-red-500 cursor-pointer hover:text-red-800 transition"
                 >
                   <FiTrash2 />
