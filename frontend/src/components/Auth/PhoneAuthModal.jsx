@@ -7,15 +7,15 @@ import toast from "react-hot-toast";
 
 const PhoneAuthModal = ({ onClose }) => {
   const { setUser, loadCartFromDataBase } = useContext(UserContext);
-  const [step, setStep] = useState("phone"); 
-  const [phone, setPhone] = useState("");
+  const [step, setStep] = useState("phone");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [showRolePopup, setShowRolePopup] = useState(false);
 
   // Step 1: Send OTP
   const handleSendOtp = async () => {
-    if (!phone.match(/^[6-9]\d{9}$/)) {
+    if (!phoneNumber.match(/^[6-9]\d{9}$/)) {
       toast.error("Enter a valid 10-digit phone number.");
       return;
     }
@@ -25,7 +25,7 @@ const PhoneAuthModal = ({ onClose }) => {
       const res = await fetch("http://localhost:5000/api/send-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone }),
+        body: JSON.stringify({ phoneNumber }),
       });
 
       const data = await res.json();
@@ -58,7 +58,7 @@ const PhoneAuthModal = ({ onClose }) => {
       const res = await fetch("http://localhost:5000/api/verify-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone, otp }),
+        body: JSON.stringify({ phoneNumber, otp }),
       });
 
       const data = await res.json();
@@ -68,7 +68,7 @@ const PhoneAuthModal = ({ onClose }) => {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
         // OTP verified — show role selection
-        if( data.isNewUser) {
+        if (data.isNewUser) {
           setShowRolePopup(true);
         } else {
           setUser(data.user);
@@ -110,34 +110,34 @@ const PhoneAuthModal = ({ onClose }) => {
   // };
 
   // ✅ Step 3: Role selection (from separate ShopOwnerPopup)
-const handleRoleSelection = async (isShopOwner) => {
-  setLoading(true);
+  const handleRoleSelection = async (isShopOwner) => {
+    setLoading(true);
 
-  try {
-    const res = await fetch("http://localhost:5000/api/set-role", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ phone, isShopOwner }),
-    });
+    try {
+      const res = await fetch("http://localhost:5000/api/set-role", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phoneNumber, isShopOwner }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (res.ok) {
-      setUser(data.user);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      if (res.ok) {
+        setUser(data.user);
+        localStorage.setItem("user", JSON.stringify(data.user));
 
-      toast.success("Logged in successfully 🎉");
-      setShowRolePopup(false);
-      onClose();
-    } else {
-      toast.error(data.message || "Failed to update role");
+        toast.success("Logged in successfully 🎉");
+        setShowRolePopup(false);
+        onClose();
+      } else {
+        toast.error(data.message || "Failed to update role");
+      }
+    } catch (err) {
+      toast.error("Something went wrong!");
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    toast.error("Something went wrong!");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <AnimatePresence>
@@ -173,8 +173,8 @@ const handleRoleSelection = async (isShopOwner) => {
                   <input
                     type="tel"
                     placeholder="Enter your phone number"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
                     className="w-full border border-gray-300 font-semibold rounded-lg px-4 py-3 text-lg focus:ring-2 focus:ring-teal-500 outline-none"
                   />
                   <button
@@ -191,7 +191,7 @@ const handleRoleSelection = async (isShopOwner) => {
                   <h2 className="text-2xl font-bold text-teal-700">
                     Enter OTP
                   </h2>
-                  <p className="text-gray-500">Sent to +91 {phone}</p>
+                  <p className="text-gray-500">Sent to +91 {phoneNumber}</p>
                   <OtpInput otp={otp} setOtp={setOtp} />
                   <button
                     onClick={handleVerifyOtp}

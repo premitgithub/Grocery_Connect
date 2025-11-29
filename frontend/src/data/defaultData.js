@@ -1,6 +1,6 @@
 export const defaultProfile = {
   name: "Prerana Mitra",
-  phone: "+91 9876543210",
+  phoneNumber: "+91 9876543210",
   email: "prerana@example.com",
   altPhone: "",
 };

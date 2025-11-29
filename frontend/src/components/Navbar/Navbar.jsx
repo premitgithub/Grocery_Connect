@@ -78,7 +78,7 @@ const Navbar = ({ onLoginClick }) => {
         {user?.verified ? (
           <div className="relative">
             <button
-              title={user?.phone}
+              title={user?.phoneNumber}
               onClick={() => setShowDropdown(!showDropdown)}
               className="flex items-center justify-center w-11 h-11 border-2 border-emerald-600 text-teal-600 rounded-full hover:bg-emerald-50 transition duration-500"
             >

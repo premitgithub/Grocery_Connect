@@ -39,6 +39,29 @@ export const UserProvider = ({ children }) => {
     localStorage.setItem("user", JSON.stringify(data));
   };
 
+  const updateUserProfile = async (updatedData) => {
+    try {
+      const res = await fetch("http://localhost:5000/api/update-profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phoneNumber: user.phoneNumber, ...updatedData }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setProfile(data.user);
+        setUser(data.user); // Update user state as well if needed
+        localStorage.setItem("profile", JSON.stringify(data.user));
+        localStorage.setItem("user", JSON.stringify(data.user));
+        toast.success("Profile updated successfully");
+      } else {
+        toast.error(data.message || "Failed to update profile");
+      }
+    } catch (error) {
+      console.error("Update profile error:", error);
+      toast.error("Something went wrong");
+    }
+  };
+
   const addAddress = (newAddr) => {
     setAddresses((prev) => {
       const updated = [...prev, newAddr];
@@ -58,9 +81,9 @@ export const UserProvider = ({ children }) => {
   // --- CART API FUNCTIONS ---
 
   const loadCartFromDataBase = async () => {
-    if (!user?.phone) return;
+    if (!user?.phoneNumber) return;
     try {
-      const data = await fetchFromCartApi(user.phone);
+      const data = await fetchFromCartApi(user.phoneNumber);
       const formatted = data.map((item) => ({
         productId: item.productId._id,
         qty: item.quantity,
@@ -73,13 +96,13 @@ export const UserProvider = ({ children }) => {
   };
 
   const addToCart = async (product) => {
-    if (!user?.phone) {
+    if (!user?.phoneNumber) {
       toast.error("Please log in first");
       setShowLoginModal(true);
       return;
     }
     try {
-      await addToCartApi(user.phone, product);
+      await addToCartApi(user.phoneNumber, product);
       await loadCartFromDataBase();
       toast.success("Added to cart!");
     } catch (error) {
@@ -89,12 +112,12 @@ export const UserProvider = ({ children }) => {
   };
 
   const removeFromCart = async (productId) => {
-    await removeFromCartApi(user.phone, productId);
+    await removeFromCartApi(user.phoneNumber, productId);
     await loadCartFromDataBase();
   };
 
   const increaseCartQuantity = async (productId, qty) => {
-    await addToCartApi(user.phone, productId);
+    await addToCartApi(user.phoneNumber, productId);
     await loadCartFromDataBase();
   };
 
@@ -102,17 +125,17 @@ export const UserProvider = ({ children }) => {
     if (qty === 1) {
       return removeFromCart(productId);
     }
-    await reduceCartItemApi(user.phone, productId);
+    await reduceCartItemApi(user.phoneNumber, productId);
     await loadCartFromDataBase();
   };
 
-  const clearCartItems = async (phone) => {
-    await clearCartItemsApi(user.phone);
+  const clearCartItems = async (phoneNumber) => {
+    await clearCartItemsApi(user.phoneNumber);
     await loadCartFromDataBase();
   };
 
   const requireLogin = (action) => {
-    if (!user?.phone) {
+    if (!user?.phoneNumber) {
       toast.error("Please log in to continue");
       setShowLoginModal(true);
       return false;
@@ -125,17 +148,17 @@ export const UserProvider = ({ children }) => {
 
   // Load cart on login
   useEffect(() => {
-    if (user?.phone) {
+    if (user?.phoneNumber) {
       loadCartFromDataBase();
     }
-  }, [user.phone]);
+  }, [user.phoneNumber]);
 
   // Sync profile phone
   useEffect(() => {
-    if (user?.phone && profile?.phone !== user.phone) {
-      setProfile((prev) => ({ ...prev, phone: user.phone }));
+    if (user?.phoneNumber && profile?.phoneNumber !== user.phoneNumber) {
+      setProfile((prev) => ({ ...prev, phoneNumber: user.phoneNumber }));
     }
-  }, [user.phone]);
+  }, [user.phoneNumber]);
 
   // Persist data
   useEffect(() => {
@@ -171,6 +194,7 @@ export const UserProvider = ({ children }) => {
         user,
         setUser,
         updateUserData,
+        updateUserProfile,
         profile,
         setProfile,
         address,
