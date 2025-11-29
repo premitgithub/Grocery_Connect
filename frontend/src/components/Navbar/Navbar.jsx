@@ -4,7 +4,7 @@ import { FaHome, FaBars, FaTimes } from "react-icons/fa";
 import { FiSearch, FiShoppingCart, FiUser } from "react-icons/fi";
 import { UserContext } from "../../context/UserContext";
 import SearchBar from "./SearchBar";
-import UserDropdown from "./UserDropdown"; 
+import UserDropdown from "./UserDropdown";
 
 const Navbar = ({ onLoginClick }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,6 +37,13 @@ const Navbar = ({ onLoginClick }) => {
       ),
     },
   ];
+
+  if (user?.isShopOwner) {
+    menuItems.unshift({
+      label: "Add Product",
+      action: () => navigate("/shop/add-product"),
+    });
+  }
 
   const navigate = useNavigate();
 

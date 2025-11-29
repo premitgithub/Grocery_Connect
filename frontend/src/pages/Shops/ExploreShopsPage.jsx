@@ -3,10 +3,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FiFilter } from "react-icons/fi";
 import ShopList from "../../components/Shops/ShopList";
 import ShopFilter from "../../components/Shops/ShopFilter";
-import { shops as allShops } from "../../data/dummyShops";
+// import { shops as allShops } from "../../data/dummyShops";
 import AnimatedTagline from "../../animations/AnimatedTagline";
+import axios from "axios";
 
 const ExploreShopsPage = () => {
+  const [allShops, setAllShops] = useState([]);
   const [filters, setFilters] = useState({
     category: "All",
     openOnly: false,
@@ -16,42 +18,47 @@ const ExploreShopsPage = () => {
 
   const [showFilters, setShowFilters] = useState(false); // 👈 mobile filter drawer toggle
 
+  useEffect(() => {
+    const fetchShops = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/shops");
+        setAllShops(res.data);
+      } catch (error) {
+        console.error("Error fetching shops:", error);
+      }
+    };
+    fetchShops();
+    window.scrollTo(0, 0);
+  }, []);
+
   // filter logic
   const filteredShops = useMemo(() => {
     return allShops.filter((s) => {
       if (filters.category && filters.category !== "All") {
-        const cats = (s.categories || []).map((c) => String(c).toLowerCase());
-        if (!cats.includes(filters.category.toLowerCase())) return false;
+        // Assuming categories are not yet in the Shop model, skipping for now or adapting
+        // const cats = (s.categories || []).map((c) => String(c).toLowerCase());
+        // if (!cats.includes(filters.category.toLowerCase())) return false;
       }
 
       if (filters.openOnly) {
-        if ((s.shopStatus || "").toLowerCase() !== "open") return false;
+        // Assuming shopStatus is not yet in the Shop model
+        // if ((s.shopStatus || "").toLowerCase() !== "open") return false;
       }
 
       if (filters.location && filters.location.trim() !== "") {
         const q = filters.location.trim().toLowerCase();
-
-        const street = String(s.address?.street || "").toLowerCase();
-        const area = String(s.address?.area || "").toLowerCase();
-        const city = String(s.address?.city || "").toLowerCase();
-        const pincode = String(s.address?.pinCode || "").toLowerCase();
-
-        if (
-          !street.includes(q) &&
-          !area.includes(q) &&
-          !city.includes(q) &&
-          !pincode.includes(q)
-        ) {
+        const address = String(s.address || "").toLowerCase();
+        if (!address.includes(q)) {
           return false;
         }
       }
 
       if (filters.search && filters.search.trim() !== "") {
         const q = filters.search.trim().toLowerCase();
-        const inName = String(s.shopName || "")
+        const inName = String(s.name || "")
           .toLowerCase()
           .includes(q);
-        const inDesc = String(s.shopDescription || "")
+        const inDesc = String(s.description || "")
           .toLowerCase()
           .includes(q);
         if (!inName && !inDesc) return false;
@@ -59,11 +66,7 @@ const ExploreShopsPage = () => {
 
       return true;
     });
-  }, [filters]);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  }, [filters, allShops]);
 
   const handleReset = () =>
     setFilters({
