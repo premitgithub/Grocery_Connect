@@ -60,12 +60,12 @@ const UserDropdown = ({ isOpen, onClose }) => {
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="absolute mt-3 w-56 bg-white border cursor-pointer border-gray-200 shadow-[0_4px_18px_rgba(0,0,0,0.08)] 
-                       rounded-xl py-2 z-50 origin-top-right right-1/2 translate-x-1/2 md:right-0 md:translate-x-0"
+            className="absolute mt-3 w-56 bg-white dark:bg-slate-900 border cursor-pointer border-gray-200 dark:border-slate-800 text-gray-800 dark:text-gray-200 shadow-[0_4px_18px_rgba(0,0,0,0.08)] 
+                       rounded-xl py-2 z-50 origin-top-right right-1/2 translate-x-1/2 md:right-0 md:translate-x-0 transition-colors duration-300"
           >
             <button
               onClick={() => handleNavigate("/account/profile")}
-              className="w-full flex text-lg items-center cursor-pointer gap-3 text-left px-6 py-3 hover:bg-emerald-50 hover:text-emerald-700 transition duration-300"
+              className="w-full flex text-lg items-center cursor-pointer gap-3 text-left px-6 py-3 hover:bg-emerald-50 dark:hover:bg-slate-800 hover:text-emerald-700 dark:hover:text-emerald-400 transition duration-300"
             >
               <FiUser className="text-teal-600 text-xl" />
               Profile
@@ -73,7 +73,7 @@ const UserDropdown = ({ isOpen, onClose }) => {
 
             <button
               onClick={() => handleNavigate("/account/address")}
-              className="w-full flex text-lg items-center gap-3 cursor-pointer text-left px-6 py-3 hover:bg-emerald-50 hover:text-emerald-700 transition duration-300"
+              className="w-full flex text-lg items-center gap-3 cursor-pointer text-left px-6 py-3 hover:bg-emerald-50 dark:hover:bg-slate-800 hover:text-emerald-700 dark:hover:text-emerald-400 transition duration-300"
             >
               <FiMapPin className="text-teal-600 text-xl" />
               Address
@@ -81,7 +81,7 @@ const UserDropdown = ({ isOpen, onClose }) => {
 
             <button
               onClick={() => handleNavigate("/account/wallet")}
-              className="w-full flex text-lg items-center gap-3 cursor-pointer text-left px-6 py-3 hover:bg-emerald-50 hover:text-emerald-700 transition duration-300"
+              className="w-full flex text-lg items-center gap-3 cursor-pointer text-left px-6 py-3 hover:bg-emerald-50 dark:hover:bg-slate-800 hover:text-emerald-700 dark:hover:text-emerald-400 transition duration-300"
             >
               <FiCreditCard className="text-teal-600 text-xl" />
               Wallet
@@ -89,7 +89,7 @@ const UserDropdown = ({ isOpen, onClose }) => {
 
             <button
               onClick={() => handleNavigate("/account/gift-cards")}
-              className="w-full flex text-lg items-center gap-3 cursor-pointer text-left px-6 py-3 hover:bg-emerald-50 hover:text-emerald-700 transition duration-300"
+              className="w-full flex text-lg items-center gap-3 cursor-pointer text-left px-6 py-3 hover:bg-emerald-50 dark:hover:bg-slate-800 hover:text-emerald-700 dark:hover:text-emerald-400 transition duration-300"
             >
               <FiGift className="text-teal-600 text-xl" />
               Gift Cards
@@ -97,7 +97,7 @@ const UserDropdown = ({ isOpen, onClose }) => {
 
             <button
               onClick={() => handleNavigate("/account/e-card")}
-              className="w-full flex text-lg items-center gap-3 cursor-pointer text-left px-6 py-3 hover:bg-emerald-50 hover:text-emerald-700 transition duration-300"
+              className="w-full flex text-lg items-center gap-3 cursor-pointer text-left px-6 py-3 hover:bg-emerald-50 dark:hover:bg-slate-800 hover:text-emerald-700 dark:hover:text-emerald-400 transition duration-300"
             >
               <FiCreditCard className="text-teal-600 text-xl" />
               E-Card
@@ -105,17 +105,17 @@ const UserDropdown = ({ isOpen, onClose }) => {
 
             <button
               onClick={() => handleNavigate("/account/settings")}
-              className="w-full flex text-lg items-center gap-3 text-left cursor-pointer px-6 py-3 hover:bg-emerald-50 hover:text-emerald-700 transition duration-300"
+              className="w-full flex text-lg items-center gap-3 text-left cursor-pointer px-6 py-3 hover:bg-emerald-50 dark:hover:bg-slate-800 hover:text-emerald-700 dark:hover:text-emerald-400 transition duration-300"
             >
               <FiSettings className="text-teal-600 text-xl" />
               Settings
             </button>
 
-            <hr className="my-2 border-gray-200" />
+            <hr className="my-2 border-gray-200 dark:border-slate-800" />
 
             <button
               onClick={() => setShowLogoutModal(true)}
-              className="w-full text-lg flex items-center justify-between cursor-pointer px-7 py-3 text-red-600 hover:bg-red-50 font-semibold transition-colors duration-300"
+              className="w-full text-lg flex items-center justify-between cursor-pointer px-7 py-3 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 font-semibold transition-colors duration-300"
             >
               <span>Logout</span>
               <FiPower className="text-xl" />

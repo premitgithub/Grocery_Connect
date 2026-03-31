@@ -24,8 +24,8 @@ const CategoriesSection = () => {
   };
 
   return (
-    <section className="py-16 bg-gradient-to-r from-white via-teal-50 to-emerald-50">
-      <h2 className="text-3xl font-bold text-center text-teal-900 mb-10">
+    <section className="py-16 bg-gradient-to-r from-white via-teal-50 to-emerald-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-colors duration-300">
+      <h2 className="text-3xl font-bold text-center text-teal-900 dark:text-teal-100 mb-10 transition-colors duration-300">
         Shop by Categories
       </h2>
 
@@ -33,7 +33,7 @@ const CategoriesSection = () => {
         {categories.map((category, index) => (
           <div
             key={index}
-            className="flex flex-col items-center bg-white rounded-2xl shadow-lg p-6 hover:shadow-gray-300 hover:scale-[1.08] transition cursor-pointer duration-300"
+            className="flex flex-col items-center bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-6 hover:shadow-gray-300 dark:hover:shadow-slate-700 hover:scale-[1.08] transition cursor-pointer duration-300"
             onClick={() => handleCategoryClick(category.name)}
           >
             <img
@@ -41,7 +41,7 @@ const CategoriesSection = () => {
               alt={category.name}
               className="w-16 mb-4 select-none"
             />
-            <h3 className="text-lg font-semibold text-teal-800 text-center">
+            <h3 className="text-lg font-semibold text-teal-800 dark:text-teal-300 text-center">
               {category.name}
             </h3>
           </div>

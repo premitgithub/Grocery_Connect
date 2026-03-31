@@ -2,7 +2,7 @@ import React from "react";
 
 const DownloadAppSection = () => {
   return (
-    <section className="py-20 bg-teal-600 text-white text-center">
+    <section className="py-20 bg-teal-600 dark:bg-slate-800 text-white text-center transition-colors duration-300">
       <h2 className="text-4xl font-bold mb-4">Get the App</h2>
       <p className="text-lg mb-8">
         Order groceries anytime, anywhere with the Grocery Connect App.

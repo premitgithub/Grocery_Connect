@@ -72,15 +72,17 @@ export const verifyOtp = async (req, res) => {
 // ✅ SET USER ROLE
 export const setUserRole = async (req, res) => {
   try {
-    const { phoneNumber, isShopOwner } = req.body;
+    const { phoneNumber, role } = req.body;
 
     if (!phoneNumber) {
       return res.status(400).json({ message: "Phone number required" });
     }
 
+    const isShopOwner = role === "Shop Owner";
+
     const user = await User.findOneAndUpdate(
       { phoneNumber },
-      { isShopOwner },
+      { role, isShopOwner },
       { new: true } // return updated document
     );
 
@@ -117,6 +119,37 @@ export const updateProfile = async (req, res) => {
     res.json({ message: "Profile updated successfully", user });
   } catch (err) {
     console.error("Update Profile Error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// ✅ UPDATE ONLINE STATUS (For Delivery Partners)
+export const updateOnlineStatus = async (req, res) => {
+  try {
+    const { userId, isOnline, location } = req.body;
+
+    if (!userId) {
+      return res.status(400).json({ message: "User ID required" });
+    }
+
+    const updateData = { isOnline };
+    if (location && location.lat && location.lng) {
+      updateData.location = location;
+    }
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      updateData,
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ message: "Online status updated", user });
+  } catch (err) {
+    console.error("Update Status Error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };

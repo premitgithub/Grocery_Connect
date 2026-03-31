@@ -51,8 +51,8 @@ const TopProductsSection = () => {
   }
 
   return (
-    <section className="py-16 bg-white overflow-hidden relative">
-      <h2 className="text-3xl font-bold text-center text-teal-900 mb-10">
+    <section className="py-16 bg-white dark:bg-slate-900 overflow-hidden relative transition-colors duration-300">
+      <h2 className="text-3xl font-bold text-center text-teal-900 dark:text-teal-100 mb-10 transition-colors duration-300">
         Trending Products
       </h2>
 
@@ -75,7 +75,7 @@ const TopProductsSection = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: index * 0.05 }}
-              className="flex-shrink-0 w-60 bg-white shadow-md rounded-2xl overflow-hidden hover:shadow-xl hover:scale-[1.05] transition-all duration-300 mt-5 mb-10 cursor-pointer"
+              className="flex-shrink-0 w-60 bg-white dark:bg-slate-800 shadow-md rounded-2xl overflow-hidden hover:shadow-xl hover:scale-[1.05] transition-all duration-300 mt-5 mb-10 cursor-pointer"
               onClick={() => handleNameClick(product)}
             >
               {/* Product Image */}
@@ -90,7 +90,7 @@ const TopProductsSection = () => {
                   className="w-full h-52 object-cover"
                 />
                 {product.brand && (
-                  <div className="absolute top-4 left-4 bg-white/70 px-3 py-1 rounded-full text-sm font-semibold">
+                  <div className="absolute top-4 left-4 bg-white/70 dark:bg-slate-900/70 px-3 py-1 rounded-full text-sm font-semibold dark:text-white">
                     {product.brand}
                   </div>
                 )}
@@ -98,13 +98,13 @@ const TopProductsSection = () => {
 
               {/* Product Info */}
               <div className="p-4 space-y-2 text-center">
-                <h3 className="text-lg font-semibold text-gray-800 line-clamp-1">
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 line-clamp-1">
                   {product.name}
                 </h3>
-                <p className="text-sm text-gray-500 line-clamp-2">
+                <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
                   {product.description || "High-quality grocery item"}
                 </p>
-                <p className="text-xl font-bold text-teal-700">
+                <p className="text-xl font-bold text-teal-700 dark:text-teal-400">
                   ₹{product.price}
                 </p>
 
@@ -127,7 +127,7 @@ const TopProductsSection = () => {
           <>
             <button
               onClick={() => scroll("left")}
-              className="absolute left-6 top-1/2 cursor-pointer transform -translate-y-1/2 text-teal-900 hover:scale-125 transition-transform duration-300 z-10"
+              className="absolute left-6 top-1/2 cursor-pointer transform -translate-y-1/2 text-teal-900 dark:text-teal-200 hover:scale-125 transition-transform duration-300 z-10"
               aria-label="Scroll left"
             >
               <svg
@@ -146,7 +146,7 @@ const TopProductsSection = () => {
 
             <button
               onClick={() => scroll("right")}
-              className="absolute right-6 top-1/2 cursor-pointer transform -translate-y-1/2 text-teal-900 hover:scale-125 transition-transform duration-300 z-10"
+              className="absolute right-6 top-1/2 cursor-pointer transform -translate-y-1/2 text-teal-900 dark:text-teal-200 hover:scale-125 transition-transform duration-300 z-10"
               aria-label="Scroll right"
             >
               <svg
@@ -166,8 +166,8 @@ const TopProductsSection = () => {
         )}
 
         {/* Fade Edges */}
-        <div className="absolute top-0 left-0 w-32 h-full bg-gradient-to-r from-white to-transparent pointer-events-none"></div>
-        <div className="absolute top-0 right-0 w-32 h-full bg-gradient-to-l from-white to-transparent pointer-events-none"></div>
+        <div className="absolute top-0 left-0 w-32 h-full bg-gradient-to-r from-white dark:from-slate-900 to-transparent pointer-events-none transition-colors duration-300"></div>
+        <div className="absolute top-0 right-0 w-32 h-full bg-gradient-to-l from-white dark:from-slate-900 to-transparent pointer-events-none transition-colors duration-300"></div>
       </div>
     </section>
   );

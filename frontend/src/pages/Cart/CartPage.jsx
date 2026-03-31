@@ -20,16 +20,16 @@ const CartPage = () => {
     requireLogin(() => {
       // this runs only if logged in
       toast.success("Proceeding to checkout...");
-      // navigate("/checkout"); 
+      navigate("/checkout");
     });
   };
 
   return (
-    <div className="min-h-screen bg-teal-50 py-8 px-4">
+    <div className="min-h-screen bg-teal-50 dark:bg-slate-900 transition-colors duration-300 py-8 px-4">
       <div className="max-w-7xl mx-auto">
         <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-4xl font-bold">My Cart</h1>
-          <div className="text-gray-600">
+          <h1 className="text-4xl font-bold dark:text-gray-100">My Cart</h1>
+          <div className="text-gray-600 dark:text-gray-400">
             Items: <span className="font-semibold">{totalItems}</span>
           </div>
         </div>
@@ -41,9 +41,9 @@ const CartPage = () => {
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="p-20 bg-white hover:shadow-2xl duration-400 rounded-2xl mt-50 shadow-sm text-center"
+                  className="p-20 bg-white dark:bg-slate-800 hover:shadow-2xl duration-400 rounded-2xl mt-50 shadow-sm text-center transition-colors duration-300"
                 >
-                  <p className="text-2xl text-gray-600 mb-4">
+                  <p className="text-2xl text-gray-600 dark:text-gray-300 mb-4">
                     Oops !! Your cart is empty.
                   </p>
                   <button
@@ -75,13 +75,13 @@ const CartPage = () => {
           </div>
 
           {/* Right column: summary */}
-          <aside className="bg-white p-10 rounded-2xl mt-50 hover:shadow-2xl duration-400 h-fit">
-            <h3 className="text-xl font-semibold mb-4">Order Summary</h3>
-            <div className="flex justify-between my-2">
+          <aside className="bg-white dark:bg-slate-800 p-10 rounded-2xl mt-50 hover:shadow-2xl duration-400 h-fit transition-colors duration-300">
+            <h3 className="text-xl font-semibold mb-4 dark:text-gray-100">Order Summary</h3>
+            <div className="flex justify-between my-2 dark:text-gray-300">
               <span>Subtotal</span>
               <span className="font-semibold">₹{cartSubtotal}</span>
             </div>
-            <div className="border-t mt-4 pt-4 space-y-3">
+            <div className="border-t dark:border-slate-700 mt-4 pt-4 space-y-3">
               <button
                 className="w-full bg-teal-600 cursor-pointer text-xl hover:bg-teal-800 duration-400 py-5 rounded-lg text-white font-semibold"
                 onClick={handleProceedToPay}
@@ -90,7 +90,7 @@ const CartPage = () => {
               </button>
               <button
                 onClick={() => clearCartItems()}
-                className="w-full border text-xl border-gray-300 py-5 rounded-lg cursor-pointer text-gray-700 hover:bg-gray-200 duration-400"
+                className="w-full border text-xl border-gray-300 dark:border-slate-600 py-5 rounded-lg cursor-pointer text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700 duration-400 transition-colors"
               >
                 Clear Cart
               </button>

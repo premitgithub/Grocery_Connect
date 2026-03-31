@@ -10,15 +10,15 @@ const ShopCard = ({ shop }) => {
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="bg-white rounded-2xl overflow-hidden shadow-2xl cursor-pointer 
+      className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-2xl cursor-pointer 
       hover:scale-[1.05] transition-all duration-500 
-      w-full sm:w-[26rem] h-[34rem] flex flex-col border border-gray-100 group"
+      w-full sm:w-[26rem] h-[34rem] flex flex-col border border-gray-100 dark:border-slate-700 group"
     >
       {/* Top Image Section */}
-      <div className="relative w-full h-44 overflow-hidden flex items-center justify-center bg-gray-50">
+      <div className="relative w-full h-44 overflow-hidden flex items-center justify-center bg-gray-50 dark:bg-slate-900 transition-colors duration-300">
         <motion.img
-          src={shop.shopImage}
-          alt={shop.shopName}
+          src={shop.image || "https://cdn-icons-png.flaticon.com/512/2972/2972185.png"}
+          alt={shop.name}
           className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-110"
         />
 
@@ -27,32 +27,32 @@ const ShopCard = ({ shop }) => {
       </div>
 
       {/* Bottom Content */}
-      <div className="flex flex-col flex-1 justify-between items-center text-center px-5 py-6 bg-white">
+      <div className="flex flex-col flex-1 justify-between items-center text-center px-5 py-6 bg-white dark:bg-slate-800 transition-colors duration-300">
         <div>
-          <h2 className="text-2xl font-bold text-teal-800 tracking-wide mb-1">
-            {shop.shopName}
+          <h2 className="text-2xl font-bold text-teal-800 dark:text-teal-300 tracking-wide mb-1">
+            {shop.name}
           </h2>
-          <p className="text-gray-600 mt-2 text-lg mb-3 min-h-[3.5rem] line-clamp-2">
-            {shop.shopDescription}
+          <p className="text-gray-600 dark:text-gray-300 mt-2 text-lg mb-3 min-h-[3.5rem] line-clamp-2">
+            {shop.description || "Quality groceries and essentials"}
           </p>
         </div>
 
         {/* Shop Info */}
-        <div className="text-gray-700 text-md space-y-2 mb-4">
+        <div className="text-gray-700 dark:text-gray-300 text-md space-y-2 mb-4">
           <p className="flex justify-center items-center gap-2">
-            <MapPin size={18} className="text-teal-600" />
+            <MapPin size={18} className="text-teal-600 dark:text-teal-400" />
             <span className="font-medium">
-              {shop.address.area}, {shop.address.city}
+              {shop.address || "Address unavailable"}
             </span>
           </p>
           <p className="flex justify-center items-center gap-2">
-            <Phone size={18} className="text-teal-600" />
-            <span className="font-medium">{shop.phoneNumber}</span>
+            <Phone size={18} className="text-teal-600 dark:text-teal-400" />
+            <span className="font-medium">{shop.owner?.phoneNumber || "No phone"}</span>
           </p>
           <p className="flex justify-center items-center gap-2">
-            <Clock size={18} className="text-teal-600" />
+            <Clock size={18} className="text-teal-600 dark:text-teal-400" />
             <span className="font-medium">
-              {shop.hours.opening} - {shop.hours.closing}
+              {shop.isOpen ? "Open" : "Closed"}
             </span>
           </p>
         </div>
@@ -60,13 +60,12 @@ const ShopCard = ({ shop }) => {
         {/* Status + Button */}
         <div className="flex flex-col items-center gap-3 w-full">
           <span
-            className={`px-4 py-1 rounded-2xl mb-4 text-lg font-semibold shadow-sm transition-all duration-300 ${
-              shop.shopStatus === "Open"
+            className={`px-4 py-1 rounded-2xl mb-4 text-lg font-semibold shadow-sm transition-all duration-300 ${shop.isOpen
                 ? "bg-green-100 text-green-700"
                 : "bg-red-100 text-red-700"
-            }`}
+              }`}
           >
-            {shop.shopStatus}
+            {shop.isOpen ? "Open" : "Closed"}
           </span>
 
           <motion.button

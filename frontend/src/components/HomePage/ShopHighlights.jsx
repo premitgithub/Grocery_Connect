@@ -1,13 +1,26 @@
-import { useState, useRef } from "react";
-import { shops } from "../../data/dummyShops"; // adjust path as needed
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import axios from "axios";
 import "../../styles/homepage.css";
 
 const ShopHighlights = () => {
+  const [shops, setShops] = useState([]);
   const [isHovered, setIsHovered] = useState(false);
   const scrollRef = useRef(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchShops = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/api/shops");
+        setShops(res.data);
+      } catch (error) {
+        console.error("Error fetching featured shops:", error);
+      }
+    };
+    fetchShops();
+  }, []);
 
   const scroll = (direction) => {
     const scrollAmount = 300;
@@ -21,13 +34,14 @@ const ShopHighlights = () => {
 
   const openShopPage = (shop) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
-    const encodedName = encodeURIComponent(shop.shopName);
-    navigate(`/shops/${encodedName}`);
+    navigate(`/shops/${shop._id}`);
   };
 
+  if (shops.length === 0) return null; // Don't show section if no shops
+
   return (
-    <section className="py-16 bg-white overflow-hidden relative">
-      <h2 className="text-3xl font-bold text-center text-teal-900 mb-10">
+    <section className="py-16 bg-white dark:bg-slate-900 transition-colors duration-300 overflow-hidden relative">
+      <h2 className="text-3xl font-bold text-center text-teal-900 dark:text-teal-100 mb-10 transition-colors duration-300">
         Featured Local Shops
       </h2>
 
@@ -38,17 +52,16 @@ const ShopHighlights = () => {
       >
         <div
           ref={scrollRef}
-          className={`flex gap-6 transition-all duration-500 shop-scroll ${
-            isHovered ? "pause-scroll overflow-x-auto" : "animate-scroll"
-          }`}
+          className={`flex gap-6 transition-all duration-500 shop-scroll ${isHovered ? "pause-scroll overflow-x-auto" : "animate-scroll"
+            }`}
         >
-          {[...shops, ...shops].map((shop, index) => (
+          {shops.map((shop, index) => (
             <motion.div
-              key={index}
+              key={`${shop._id}-${index}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: index * 0.05 }}
-              className="flex-shrink-0 w-60 bg-white shadow-md rounded-2xl overflow-hidden hover:shadow-xl hover:scale-[1.05] transition-all duration-300 mt-5 mb-10 cursor-pointer"
+              className="flex-shrink-0 w-60 bg-white dark:bg-slate-800 shadow-md rounded-2xl overflow-hidden hover:shadow-xl hover:scale-[1.05] transition-all duration-300 mt-5 mb-10 cursor-pointer"
               onClick={() => openShopPage(shop)}
               role="button"
               tabIndex={0}
@@ -60,24 +73,24 @@ const ShopHighlights = () => {
               <div className="relative">
                 <img
                   src={
-                    shop.shopImage ||
+                    shop.image ||
                     "https://cdn-icons-png.flaticon.com/512/2972/2972185.png"
                   }
-                  alt={shop.shopName}
+                  alt={shop.name}
                   className="w-full h-52 object-cover"
                 />
               </div>
 
               {/* Shop Info */}
               <div className="p-4 space-y-2 text-center">
-                <h3 className="text-lg font-semibold text-gray-800 line-clamp-1">
-                  {shop.shopName}
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 line-clamp-1">
+                  {shop.name}
                 </h3>
-                <p className="text-sm text-gray-500 line-clamp-2">
-                  {shop.shopDescription || "Quality groceries and essentials"}
+                <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
+                  {shop.description || "Quality groceries and essentials"}
                 </p>
                 <p className="text-sm text-teal-600 font-semibold">
-                  {shop.shopStatus}
+                  {shop.isOpen ? "Open" : "Closed"}
                 </p>
 
                 <button
@@ -99,7 +112,7 @@ const ShopHighlights = () => {
           <>
             <button
               onClick={() => scroll("left")}
-              className="absolute left-6 top-1/2 cursor-pointer transform -translate-y-1/2 text-teal-900 hover:scale-125 transition-transform duration-300 z-10"
+              className="absolute left-6 top-1/2 cursor-pointer transform -translate-y-1/2 text-teal-900 dark:text-teal-200 hover:scale-125 transition-transform duration-300 z-10"
               aria-label="Scroll left"
             >
               <svg
@@ -118,7 +131,7 @@ const ShopHighlights = () => {
 
             <button
               onClick={() => scroll("right")}
-              className="absolute right-6 top-1/2 cursor-pointer transform -translate-y-1/2 text-teal-900 hover:scale-125 transition-transform duration-300 z-10"
+              className="absolute right-6 top-1/2 cursor-pointer transform -translate-y-1/2 text-teal-900 dark:text-teal-200 hover:scale-125 transition-transform duration-300 z-10"
               aria-label="Scroll right"
             >
               <svg
@@ -138,8 +151,8 @@ const ShopHighlights = () => {
         )}
 
         {/* Fade Edges */}
-        <div className="absolute top-0 left-0 w-32 h-full bg-gradient-to-r from-white to-transparent pointer-events-none"></div>
-        <div className="absolute top-0 right-0 w-32 h-full bg-gradient-to-l from-white to-transparent pointer-events-none"></div>
+        <div className="absolute top-0 left-0 w-32 h-full bg-gradient-to-r from-white dark:from-slate-900 to-transparent pointer-events-none transition-colors duration-300"></div>
+        <div className="absolute top-0 right-0 w-32 h-full bg-gradient-to-l from-white dark:from-slate-900 to-transparent pointer-events-none transition-colors duration-300"></div>
       </div>
     </section>
   );

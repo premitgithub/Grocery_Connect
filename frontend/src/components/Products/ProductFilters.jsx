@@ -36,7 +36,7 @@ const ProductFilters = ({
       layout
       initial={{ opacity: 0, y: -6 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white p-4 rounded-2xl shadow-sm border"
+      className="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border dark:border-slate-700 text-gray-800 dark:text-gray-200 transition-colors duration-300"
     >
       <div className="mb-4">
         <input
@@ -44,7 +44,7 @@ const ProductFilters = ({
           value={searchQ}
           onChange={(e) => setSearchQ(e.target.value)}
           placeholder="Search products..."
-          className="w-full border rounded-lg px-3 py-4 text-lg focus:ring-2 focus:ring-teal-400"
+          className="w-full border dark:border-slate-600 dark:bg-slate-900 rounded-lg px-3 py-4 text-lg focus:ring-2 focus:ring-teal-400 outline-none"
         />
       </div>
 
@@ -83,7 +83,7 @@ const ProductFilters = ({
             onChange={(e) =>
               setPriceRange([Number(e.target.value || 0), localMax])
             }
-            className="w-1/2 border rounded-lg px-3 text-lg py-4 focus:ring-2 focus:ring-teal-400"
+            className="w-1/2 border dark:border-slate-600 dark:bg-slate-900 rounded-lg px-3 text-lg py-4 focus:ring-2 focus:ring-teal-400 outline-none"
           />
           <input
             type="number"
@@ -93,7 +93,7 @@ const ProductFilters = ({
             onChange={(e) =>
               setPriceRange([localMin, Number(e.target.value || maxPriceAll)])
             }
-            className="w-1/2 border rounded-lg px-3 text-lg py-4 focus:ring-2 focus:ring-teal-400"
+            className="w-1/2 border dark:border-slate-600 dark:bg-slate-900 rounded-lg px-3 text-lg py-4 focus:ring-2 focus:ring-teal-400 outline-none"
           />
         </div>
         <p className="text-md text-gray-500 mt-2">
@@ -106,7 +106,7 @@ const ProductFilters = ({
         <select
           value={minRating}
           onChange={(e) => setMinRating(Number(e.target.value))}
-          className="w-full border rounded-lg px-3 py-4 focus:ring-2 focus:ring-teal-400 cursor-pointer"
+          className="w-full border dark:border-slate-600 dark:bg-slate-900 rounded-lg px-3 py-4 focus:ring-2 focus:ring-teal-400 cursor-pointer outline-none"
         >
           <option value={0}>Any</option>
           <option value={1}>1 ★+</option>
@@ -125,7 +125,7 @@ const ProductFilters = ({
             setMinRating(0);
             setSearchQ("");
           }}
-          className="flex-1 border px-3 py-4 text-2xl rounded-lg hover:bg-teal-500 duration-400 cursor-pointer"
+          className="flex-1 border dark:border-slate-600 px-3 py-4 text-2xl rounded-lg hover:bg-teal-500 dark:hover:bg-teal-600 duration-400 cursor-pointer transition-colors"
         >
           Reset
         </button>

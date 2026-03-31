@@ -55,7 +55,7 @@ export const getShopByOwner = async (req, res) => {
 // Get all shops
 export const getAllShops = async (req, res) => {
     try {
-        const shops = await Shop.find().populate("owner", "name email");
+        const shops = await Shop.find().populate("owner", "name email phoneNumber");
         res.status(200).json(shops);
     } catch (error) {
         console.error("Error fetching shops:", error);
@@ -66,7 +66,7 @@ export const getAllShops = async (req, res) => {
 // Get shop by ID
 export const getShopById = async (req, res) => {
     try {
-        const shop = await Shop.findById(req.params.id).populate("owner", "name email");
+        const shop = await Shop.findById(req.params.id).populate("owner", "name email phoneNumber");
         if (!shop) {
             return res.status(404).json({ message: "Shop not found" });
         }

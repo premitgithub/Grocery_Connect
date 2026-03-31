@@ -77,7 +77,7 @@ const ExploreShopsPage = () => {
     });
 
   return (
-    <section className="px-4 sm:px-8 md:px-14 py-14 bg-gradient-to-b from-teal-50 to-emerald-50 min-h-screen">
+    <section className="px-4 sm:px-8 md:px-14 py-14 bg-gradient-to-b from-teal-50 to-emerald-50 dark:from-slate-900 dark:to-slate-800 min-h-screen transition-colors duration-300">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -30 }}
@@ -85,7 +85,7 @@ const ExploreShopsPage = () => {
         transition={{ duration: 0.6 }}
         className="text-center mb-20"
       >
-        <h1 className="text-4xl md:text-5xl font-extrabold text-teal-800 tracking-tight">
+        <h1 className="text-4xl md:text-5xl font-extrabold text-teal-800 dark:text-teal-300 tracking-tight transition-colors duration-300">
           Explore Local Shops
         </h1>
         <AnimatedTagline />
@@ -110,7 +110,7 @@ const ExploreShopsPage = () => {
           transition={{ duration: 0.5 }}
           className="hidden md:block md:w-1/4"
         >
-          <div className="bg-white/90 rounded-2xl shadow-2xl p-6 sticky top-20">
+          <div className="bg-white/90 dark:bg-slate-800/90 rounded-2xl shadow-2xl p-6 sticky top-20 transition-colors duration-300">
             <ShopFilter
               initialFilters={filters}
               onApply={setFilters}
@@ -146,14 +146,14 @@ const ExploreShopsPage = () => {
 
             {/* Drawer panel */}
             <motion.div
-              className="fixed top-0 left-0 bottom-0 w-80 max-w-[80%] bg-white z-50 shadow-2xl p-6 overflow-y-auto"
+              className="fixed top-0 left-0 bottom-0 w-80 max-w-[80%] bg-white dark:bg-slate-900 z-50 shadow-2xl p-6 overflow-y-auto transition-colors duration-300"
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "tween", duration: 0.3 }}
             >
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-semibold text-teal-700">Filters</h3>
+                <h3 className="text-xl font-semibold text-teal-700 dark:text-teal-300">Filters</h3>
                 <button
                   onClick={() => setShowFilters(false)}
                   className="text-sm text-gray-500 hover:text-gray-800"

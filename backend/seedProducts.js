@@ -176,7 +176,7 @@ const products = [
     price: 165,
     category: "Edible Oils",
     images: [
-      "https://bajarhaat.com/wp-content/uploads/2024/06/Fortune-Sunflower-Oil-1-Litre-SDL807285950-1-38484.jpg",
+      "https://m.media-amazon.com/images/I/61ZSTmboXVL.jpg", // Saffola Gold image used as placeholder
     ],
     stock: 150,
     brand: "Fortune",
@@ -214,7 +214,7 @@ const products = [
     price: 190,
     category: "Edible Oils",
     images: [
-      "https://r-mart.co.in/images/thumbs/0023767_emami-healthy-tasty-rice-bran-oil-1l_510.jpeg",
+      "https://www.bbassets.com/media/uploads/p/l/30003360_7-dhara-oil-mustard-kachi-ghani.jpg", // Dhara Mustard Oil image used as placeholder
     ],
     stock: 110,
     brand: "Emami",

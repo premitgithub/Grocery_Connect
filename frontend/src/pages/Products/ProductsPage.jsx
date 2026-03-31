@@ -96,11 +96,11 @@ const ProductsPage = () => {
   const handleCardClick = (product) => console.log("view", product);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-teal-50 py-6 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-teal-50 via-white to-teal-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-colors duration-300 py-6 px-4">
       <div className="flex flex-col lg:flex-row w-full gap-10">
         {/* === Sidebar for large screens === */}
-        <aside className="hidden lg:block lg:w-1/4 xl:w-1/5 bg-white ml-10 shadow-md rounded-2xl p-5 h-fit sticky top-20 self-start">
-          <h1 className="text-3xl font-semibold flex ml-30 mb-5 text-teal-700">
+        <aside className="hidden lg:block lg:w-1/4 xl:w-1/5 bg-white dark:bg-slate-800 ml-10 shadow-md rounded-2xl p-5 h-fit sticky top-20 self-start transition-colors duration-300">
+          <h1 className="text-3xl font-semibold flex ml-30 mb-5 text-teal-700 dark:text-teal-300">
             Filters
           </h1>
 
@@ -111,9 +111,9 @@ const ProductsPage = () => {
         <section className="flex-1 relative">
           {/* Top Bar */}
           <div className="flex items-center justify-between mb-6">
-            <h1 className="text-4xl font-bold text-teal-700">
+            <h1 className="text-4xl font-bold text-teal-700 dark:text-teal-300">
               Explore Our Products{" "}
-              <span className="text-gray-500 text-lg font-medium">
+              <span className="text-gray-500 dark:text-gray-400 text-lg font-medium">
                 ({filtered.length})
               </span>
             </h1>
@@ -123,7 +123,7 @@ const ProductsPage = () => {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="border rounded-lg px-5 py-4 mr-12 text-xl focus:ring-2 focus:ring-teal-400 cursor-pointer"
+                className="border dark:border-slate-700 dark:bg-slate-900 dark:text-white rounded-lg px-5 py-4 mr-12 text-xl focus:ring-2 focus:ring-teal-400 cursor-pointer"
               >
                 <option value="">Sort</option>
                 <option value="price-asc">Price: Low → High</option>
@@ -132,7 +132,7 @@ const ProductsPage = () => {
               </select>
               <button
                 onClick={() => setShowFilters(true)}
-                className="lg:hidden flex items-center gap-1 border px-3 py-2 rounded-lg text-sm text-teal-700 hover:bg-teal-100 transition"
+                className="lg:hidden flex items-center gap-1 border dark:border-slate-700 px-3 py-2 rounded-lg text-sm text-teal-700 dark:text-teal-300 hover:bg-teal-100 dark:hover:bg-slate-800 transition"
               >
                 <FiFilter className="text-lg" /> Filters
               </button>
@@ -186,14 +186,14 @@ const ProductsPage = () => {
             />
             {/* panel */}
             <motion.div
-              className="fixed top-0 left-0 bottom-0 w-80 max-w-[80%] bg-white z-50 shadow-lg p-5 overflow-y-auto"
+              className="fixed top-0 left-0 bottom-0 w-80 max-w-[80%] bg-white dark:bg-slate-900 z-50 shadow-lg p-5 overflow-y-auto transition-colors duration-300"
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "tween", duration: 0.3 }}
             >
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-teal-700">Filters</h3>
+                <h3 className="text-lg font-semibold text-teal-700 dark:text-teal-300">Filters</h3>
                 <button
                   onClick={() => setShowFilters(false)}
                   className="text-sm text-gray-500 hover:text-gray-800"

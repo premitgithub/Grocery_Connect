@@ -67,7 +67,7 @@ const AnimatedHeroText = () => {
     <div className="text-center">
       {/* Heading — types once and stays */}
       <motion.h1
-        className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-teal-900 leading-snug"
+        className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-teal-900 dark:text-teal-100 leading-snug transition-colors duration-300"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
@@ -78,7 +78,7 @@ const AnimatedHeroText = () => {
           ) : (
             <span key={idx}>
               {part}
-              <span className="text-teal-600">Local Grocery Stores</span>
+              <span className="text-teal-600 dark:text-teal-400">Local Grocery Stores</span>
             </span>
           )
         )}
@@ -86,7 +86,7 @@ const AnimatedHeroText = () => {
 
       {/* Subtext — loops infinitely */}
       <motion.p
-        className="text-gray-700 text-base sm:text-lg md:text-xl leading-relaxed mt-4 max-w-3xl mx-auto font-medium tracking-wide"
+        className="text-gray-700 dark:text-gray-300 text-base sm:text-lg md:text-xl leading-relaxed mt-4 max-w-3xl mx-auto font-medium tracking-wide transition-colors duration-300"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}

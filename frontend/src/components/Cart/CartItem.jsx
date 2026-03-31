@@ -21,7 +21,7 @@ const CartItem = ({ item, onRemove }) => {
   }
 
   return (
-    <div className="flex items-start gap-4 p-8 rounded-2xl bg-white border border-gray-200 shadow-sm hover:shadow-md transition">
+    <div className="flex items-start gap-4 p-8 rounded-2xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-sm hover:shadow-md transition dark:transition-colors duration-300">
       <img
         src={product.images?.[0] || "/placeholder.png"}
         alt={product.name}
@@ -31,21 +31,21 @@ const CartItem = ({ item, onRemove }) => {
       <div className="flex-1">
         <h4
           onClick={handleNameClick}
-          className="font-semibold text-lg cursor-pointer hover:underline hover:text-teal-700 duration-200"
+          className="font-semibold text-lg cursor-pointer hover:underline hover:text-teal-700 dark:text-gray-100 dark:hover:text-teal-400 duration-200"
         >
           {product.name}
         </h4>
-        <p className="text-sm text-gray-500 mb-2">₹{product.price}</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">₹{product.price}</p>
 
         <div className="flex items-center gap-3">
           <button
             onClick={() => decreaseQtyChange()}
-            className="px-3 py-1 cursor-pointer border rounded hover:bg-gray-100"
+            className="px-3 py-1 cursor-pointer border dark:border-slate-600 dark:text-gray-300 dark:hover:bg-slate-700 rounded hover:bg-gray-100 transition-colors"
             aria-label="decrease"
           >
             -
           </button>
-          <div className="px-4 py-1 border rounded">{qty}</div>
+          <div className="px-4 py-1 border dark:border-slate-600 dark:text-gray-200 rounded">{qty}</div>
           <button
             onClick={() => increaseQtyChange()}
             className="px-3 py-1 bg-teal-600 cursor-pointer text-white rounded hover:bg-teal-700"
@@ -57,7 +57,7 @@ const CartItem = ({ item, onRemove }) => {
       </div>
 
       <div className="flex flex-col items-end gap-4">
-        <div className="font-semibold">₹{product.price * qty}</div>
+        <div className="font-semibold dark:text-gray-200">₹{product.price * qty}</div>
         <button
           onClick={onRemove}
           className="text-red-500 cursor-pointer hover:text-red-700"

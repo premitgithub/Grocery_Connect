@@ -137,12 +137,12 @@ const SearchBar = ({ isOpen, onClose }) => {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.25, ease: "easeOut" }}
-          className="
-            absolute top-full right-25 mt-2
-            bg-white border border-gray-200 shadow-md rounded-xl
-            px-5 py-5 z-50 flex items-center
-            w-[250px] sm:w-[300px] md:w-[350px]
-          "
+            className="
+              absolute top-full right-25 mt-2
+              bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 shadow-md rounded-xl
+              px-5 py-5 z-50 flex items-center
+              w-[250px] sm:w-[300px] md:w-[350px] transition-colors duration-300
+            "
         >
           <form onSubmit={handleSearch} className="flex items-center w-full">
             <FiSearch className="text-teal-600 text-xl mr-2 shrink-0" />
@@ -151,13 +151,13 @@ const SearchBar = ({ isOpen, onClose }) => {
               placeholder="Search products, categories, shops..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="flex-1 text-lg border-none outline-none focus:ring-0 placeholder-gray-400"
+              className="flex-1 text-lg border-none outline-none focus:ring-0 placeholder-gray-400 bg-transparent dark:text-white"
               autoFocus
             />
             <button
               type="button"
               onClick={onClose}
-              className="text-gray-500 py-2 px-2 bg-gray-100 hover:text-teal-600 hover:bg-gray-300 duration-300 rounded-2xl transition ml-2"
+              className="text-gray-500 py-2 px-2 bg-gray-100 dark:bg-slate-800 dark:hover:bg-slate-700 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-gray-300 duration-300 rounded-2xl transition ml-2"
             >
               <FiX className="text-xl cursor-pointer" />
             </button>

@@ -80,7 +80,7 @@ const CategoryProductsPage = () => {
   }
 
   return (
-    <section className="relative py-14 bg-white min-h-screen overflow-hidden">
+    <section className="relative py-14 bg-white dark:bg-slate-900 min-h-screen overflow-hidden transition-colors duration-300">
       {/* --- Softer Gradient Banner --- */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -88,9 +88,9 @@ const CategoryProductsPage = () => {
         transition={{ duration: 0.6 }}
         className="
           w-full max-w-3xl mx-auto 
-          bg-gradient-to-r from-teal-100 via-emerald-100 to-teal-50 
+          bg-gradient-to-r from-teal-100 via-emerald-100 to-teal-50 dark:from-slate-800 dark:via-slate-700 dark:to-slate-800
           rounded-2xl flex items-center justify-center 
-          mb-10 shadow-md 
+          mb-10 shadow-md transition-colors duration-300
           px-8 sm:px-10 py-10 sm:py-12 md:py-14 
           min-h-[10rem] sm:min-h-[14rem] md:min-h-[16rem] lg:min-h-[18rem]"
       >
@@ -101,7 +101,7 @@ const CategoryProductsPage = () => {
       </motion.div>
 
       {/* --- Product Container --- */}
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 md:px-12 py-10 bg-white border border-gray-200 shadow-xl rounded-3xl">
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 md:px-12 py-10 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow-xl rounded-3xl transition-colors duration-300">
         {/* --- Toolbar --- */}
         <div className="flex flex-wrap justify-between items-center mb-8">
           {/* Animated Count */}
@@ -110,7 +110,7 @@ const CategoryProductsPage = () => {
             initial={{ opacity: 1, y: -12 }}
             animate={{ opacity: 3, y: 4 }}
             transition={{ duration: 1.2, ease: "easeOut" }}
-            className="text-gray-700 font-medium text-2xl"
+            className="text-gray-700 dark:text-gray-300 font-medium text-2xl"
           >
             {count} Products Found
           </motion.p>
@@ -127,7 +127,7 @@ const CategoryProductsPage = () => {
                 <select
                   value={sortOption}
                   onChange={(e) => setSortOption(e.target.value)}
-                  className="appearance-none bg-white border border-gray-300 rounded-2xl px-6 py-3 text-base shadow-md text-gray-700 font-medium cursor-pointer focus:ring-4 focus:ring-teal-200 focus:border-teal-400 transition-all duration-300 pr-10 hover:scale-[1.02]"
+                  className="appearance-none bg-white dark:bg-slate-900 border border-gray-300 dark:border-slate-600 rounded-2xl px-6 py-3 text-base shadow-md text-gray-700 dark:text-gray-300 font-medium cursor-pointer focus:ring-4 focus:ring-teal-200 focus:border-teal-400 transition-all duration-300 pr-10 hover:scale-[1.02]"
                 >
                   <option value="default">Sort by</option>
                   <option value="lowToHigh">Price: Low to High</option>
@@ -156,7 +156,7 @@ const CategoryProductsPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.05 }}
-                className="bg-teal-50 shadow-md rounded-2xl overflow-hidden cursor-pointer hover:shadow-xl hover:scale-[1.03] transition-all duration-300"
+                className="bg-teal-50 dark:bg-slate-900 shadow-md rounded-2xl overflow-hidden cursor-pointer hover:shadow-xl hover:scale-[1.03] transition-all duration-300"
                 onClick={() => handleViewProduct(product)}
               >
                 <div className="relative">
@@ -166,17 +166,17 @@ const CategoryProductsPage = () => {
                     className="w-full h-52 object-cover"
                   />
                   {product.brand && (
-                    <div className="absolute top-4 left-4 bg-white/70 px-3 py-1 rounded-full text-sm font-semibold">
+                    <div className="absolute top-4 left-4 bg-white/70 dark:bg-slate-800/70 dark:text-gray-200 px-3 py-1 rounded-full text-sm font-semibold">
                       {product.brand}
                     </div>
                   )}
                 </div>
 
                 <div className="p-4 space-y-2 text-center">
-                  <h3 className="text-lg font-semibold text-gray-800 line-clamp-1">
+                  <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 line-clamp-1">
                     {product.name}
                   </h3>
-                  <p className="text-gray-600 font-semibold">
+                  <p className="text-gray-600 dark:text-gray-400 font-semibold">
                     ₹{product.price}
                   </p>
                   <button
@@ -196,7 +196,7 @@ const CategoryProductsPage = () => {
             transition={{ duration: 0.6 }}
             className="relative flex flex-col items-center justify-start text-center m-10 w-full max-w-4xl mx-auto h-auto overflow-hidden rounded-2xl"
           >
-            <p className="text-2xl md:text-3xl font-semibold text-gray-800 mb-6">
+            <p className="text-2xl md:text-3xl font-semibold text-gray-800 dark:text-gray-300 mb-6">
               No products found in this category 😔
             </p>
             <img
@@ -209,8 +209,8 @@ const CategoryProductsPage = () => {
       </div>
 
       {/* --- Fades & Back to Top --- */}
-      <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-white to-transparent pointer-events-none"></div>
-      <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-emerald-50 to-transparent pointer-events-none"></div>
+      <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-white dark:from-slate-900 to-transparent pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-emerald-50 dark:from-slate-900 to-transparent pointer-events-none"></div>
 
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}

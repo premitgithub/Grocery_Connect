@@ -16,7 +16,7 @@ const Navbar = ({ onLoginClick }) => {
 
   const menuItems = [
     { label: "Products", action: () => navigate("/products") },
-    { label: "Orders" },
+    { label: "Orders", action: () => navigate("/orders") },
     {
       label: "Search",
       icon: <FiSearch className="text-teal-600 text-3xl" />,
@@ -52,11 +52,11 @@ const Navbar = ({ onLoginClick }) => {
   };
 
   return (
-    <nav className="sticky top-0 z-50 w-full bg-white shadow-md px-8 py-5 flex items-center justify-between border-b border-zinc-300 ">
+    <nav className="sticky top-0 z-50 w-full bg-white dark:bg-slate-900 shadow-md px-8 py-5 flex items-center justify-between border-b border-zinc-300 dark:border-slate-800 transition-colors duration-300">
       {/* Logo */}
       <div className="flex items-center space-x-3 cursor-pointer">
         <FaHome className="text-2xl text-emerald-600" />
-        <span onClick={home} className="text-2xl font-bold text-gray-900">
+        <span onClick={home} className="text-2xl font-bold text-gray-900 dark:text-white">
           Grocera
         </span>
       </div>
@@ -67,10 +67,10 @@ const Navbar = ({ onLoginClick }) => {
           <button
             key={item.label}
             onClick={item.action}
-            className="px-6 py-3 rounded-xl hover:bg-emerald-100 text-2xl cursor-pointer transition duration-500 flex items-center gap-2"
+            className="px-6 py-3 rounded-xl hover:bg-emerald-100 dark:hover:bg-slate-800 text-2xl cursor-pointer transition duration-500 flex items-center gap-2"
           >
             {item.icon && <span>{item.icon}</span>}
-            {!item.icon && item.label}
+            {!item.icon && <span className="dark:text-gray-200">{item.label}</span>}
           </button>
         ))}
 
@@ -111,12 +111,12 @@ const Navbar = ({ onLoginClick }) => {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="absolute top-20 left-0 w-full bg-white shadow-lg flex flex-col items-center space-y-4 py-4 z-40">
+        <div className="absolute top-20 left-0 w-full bg-white dark:bg-slate-900 shadow-lg flex flex-col items-center space-y-4 py-4 z-40 transition-colors duration-300">
           {menuItems.map((item) => (
             <button
               key={item.label}
               onClick={item.action}
-              className="flex items-center gap-3 text-2xl text-gray-800 hover:text-emerald-700 transition duration-300"
+              className="flex items-center gap-3 text-2xl text-gray-800 dark:text-gray-200 hover:text-emerald-700 dark:hover:text-emerald-400 transition duration-300"
             >
               {item.icon && <span>{item.icon}</span>}
               {item.label}

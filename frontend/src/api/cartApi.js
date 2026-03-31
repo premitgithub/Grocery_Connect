@@ -8,7 +8,7 @@ export const addToCartApi = async (phoneNumber, productId) => {
       phoneNumber,
       productId
     });
-
+    
     return res.data;
 
   } catch (error) {

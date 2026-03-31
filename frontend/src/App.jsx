@@ -2,6 +2,7 @@ import React, { useEffect, useContext } from "react";
 import { Toaster } from "react-hot-toast";
 import { UserContext } from "./context/UserContext";
 import AppRoutes from "./routes/AppRoutes"; 
+import ThemeToggle from "./components/ThemeToggle";
 
 const App = () => {
   const { setUser } = useContext(UserContext);
@@ -17,6 +18,7 @@ const App = () => {
   return (
     <>
       <AppRoutes /> 
+      <ThemeToggle />
       <Toaster position="top-center" reverseOrder={false} />
     </>
   );

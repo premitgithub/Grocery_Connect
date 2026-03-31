@@ -42,32 +42,32 @@ const ShopFilter = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45 }}
     >
-      <h3 className="text-3xl font-semibold text-teal-800 mb-4 text-center">
+      <h3 className="text-3xl font-semibold text-teal-800 dark:text-teal-300 mb-4 text-center">
         Filters
       </h3>
 
       {/* Search */}
       <div className="mb-8">
-        <label className="block text-lg font-medium text-gray-700 mb-2">
+        <label className="block text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">
           Search
         </label>
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search shops or items..."
-          className="w-full border border-gray-300 rounded-xl px-4 py-4 focus:ring-2 focus:ring-teal-300 focus:outline-none"
+          className="w-full border border-gray-300 dark:border-slate-700 dark:bg-slate-900 dark:text-white rounded-xl px-4 py-4 focus:ring-2 focus:ring-teal-300 focus:outline-none"
         />
       </div>
 
       {/* Category */}
       <div className="mb-8">
-        <label className="block text-lg font-medium text-gray-700 mb-2">
+        <label className="block text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">
           Category
         </label>
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="w-full border border-gray-300 rounded-xl px-4 py-4 focus:ring-2 focus:ring-teal-300 focus:outline-none cursor-pointer"
+          className="w-full border border-gray-300 dark:border-slate-700 dark:bg-slate-900 dark:text-white rounded-xl px-4 py-4 focus:ring-2 focus:ring-teal-300 focus:outline-none cursor-pointer"
         >
           <option value="All">All Categories</option>
           <option value="Vegetables">Vegetables</option>
@@ -84,14 +84,14 @@ const ShopFilter = ({
 
       {/* Location */}
       <div className="mb-8">
-        <label className="block text-lg font-medium text-gray-700 mb-2">
+        <label className="block text-lg font-medium text-gray-700 dark:text-gray-300 mb-2">
           City / Area / Pincode
         </label>
         <input
           value={location}
           onChange={(e) => setLocation(e.target.value)}
           placeholder="e.g. Kolkata, Salt Lake, 700019"
-          className="w-full border border-gray-300 rounded-xl px-4 py-4 focus:ring-2 focus:ring-teal-300 focus:outline-none"
+          className="w-full border border-gray-300 dark:border-slate-700 dark:bg-slate-900 dark:text-white rounded-xl px-4 py-4 focus:ring-2 focus:ring-teal-300 focus:outline-none"
         />
       </div>
 
@@ -104,7 +104,7 @@ const ShopFilter = ({
           onChange={(e) => setOpenOnly(e.target.checked)}
           className="w-4 h-6 accent-teal-600"
         />
-        <label htmlFor="openNow" className="text-lg text-gray-700 font-medium">
+        <label htmlFor="openNow" className="text-lg text-gray-700 dark:text-gray-300 font-medium">
           Open Now
         </label>
       </div>
@@ -122,7 +122,7 @@ const ShopFilter = ({
         <motion.button
           whileHover={{ scale: 1.03 }}
           onClick={handleReset}
-          className="flex-1 bg-white border text-lg cursor-pointer border-gray-300 py-3 rounded-xl font-medium"
+          className="flex-1 bg-white dark:bg-slate-800 dark:text-gray-200 border text-lg cursor-pointer border-gray-300 dark:border-slate-700 py-3 rounded-xl font-medium transition-colors duration-300"
         >
           Reset
         </motion.button>

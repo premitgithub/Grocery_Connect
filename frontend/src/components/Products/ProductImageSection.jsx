@@ -10,7 +10,7 @@ const ProductImageSection = ({ product }) => {
       initial={{ scale: 0.9, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="bg-white rounded-2xl p-8 shadow-xl flex items-center justify-center"
+      className="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-xl flex items-center justify-center transition-colors duration-300"
     >
       <img
         src={imageUrl}

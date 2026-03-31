@@ -10,7 +10,7 @@ const MainLayout = () => {
   const { showLoginModal, setShowLoginModal } = useContext(UserContext);
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-teal-50 via-white to-emerald-50 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-r from-teal-50 via-white to-emerald-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-colors duration-300 flex flex-col">
       {/* Navbar already handles the Cart, etc. */}
       <Navbar onLoginClick={() => setShowLoginModal(true)} />
 

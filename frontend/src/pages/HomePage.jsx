@@ -40,7 +40,7 @@ const HomePage = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-teal-50 overflow-hidden">
+    <div className="relative min-h-screen bg-teal-50 dark:bg-slate-900 transition-colors duration-300 overflow-hidden">
       {/* Main Content */}
       <motion.div
         className={`transition-all duration-500 ${

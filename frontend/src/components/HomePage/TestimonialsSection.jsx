@@ -20,8 +20,8 @@ const testimonials = [
 
 const TestimonialsSection = () => {
   return (
-    <section className="py-16 bg-teal-50 text-center">
-      <h2 className="text-3xl font-bold text-teal-900 mb-10">
+    <section className="py-16 bg-teal-50 dark:bg-slate-900 text-center transition-colors duration-300">
+      <h2 className="text-3xl font-bold text-teal-900 dark:text-teal-100 mb-10 transition-colors duration-300">
         What Our Users Say
       </h2>
 
@@ -29,15 +29,15 @@ const TestimonialsSection = () => {
         {testimonials.map((t, index) => (
           <div
             key={index}
-            className="bg-white rounded-2xl shadow-md p-8 max-w-sm mx-auto hover:shadow-lg transition"
+            className="bg-white dark:bg-slate-800 rounded-2xl shadow-md p-8 max-w-sm mx-auto hover:shadow-lg transition"
           >
             <img
               src={t.img}
               alt={t.name}
               className="w-20 h-20 mx-auto rounded-full mb-4"
             />
-            <p className="text-gray-700 italic mb-4">“{t.text}”</p>
-            <h4 className="font-semibold text-teal-800">{t.name}</h4>
+            <p className="text-gray-700 dark:text-gray-300 italic mb-4">“{t.text}”</p>
+            <h4 className="font-semibold text-teal-800 dark:text-teal-300">{t.name}</h4>
           </div>
         ))}
       </div>

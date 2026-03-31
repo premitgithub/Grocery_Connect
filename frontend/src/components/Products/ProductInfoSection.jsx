@@ -16,21 +16,21 @@ const ProductInfoSection = ({ product }) => {
       initial={{ x: 40, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.4 }}
-      className="bg-white p-10 rounded-2xl shadow-xl space-y-5"
+      className="bg-white dark:bg-slate-800 p-10 rounded-2xl shadow-xl space-y-5 transition-colors duration-300"
     >
-      <h1 className="text-3xl font-bold text-gray-800">{product.name}</h1>
+      <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200">{product.name}</h1>
 
-      <p className="text-teal-600 text-2xl font-semibold">
+      <p className="text-teal-600 dark:text-teal-400 text-2xl font-semibold">
         ₹{product.price?.toLocaleString()}
       </p>
 
-      <p className="text-gray-600 leading-relaxed">{product.description}</p>
+      <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{product.description}</p>
 
       <div className="flex gap-2 items-center">
         <span className="text-yellow-500 text-xl">
           ⭐ {product.rating || 4.5}
         </span>
-        <span className="text-gray-500">{product.reviews || 100}(reviews)</span>
+        <span className="text-gray-500 dark:text-gray-400">{product.reviews || 100}(reviews)</span>
       </div>
 
       <button

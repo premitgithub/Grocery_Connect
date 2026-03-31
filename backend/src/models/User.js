@@ -19,6 +19,11 @@ const userSchema = new mongoose.Schema({
     required: false,
     default: "",
   },
+  role: {
+    type: String,
+    enum: ["Customer", "Shop Owner", "Delivery Partner"],
+    default: "Customer",
+  },
   isShopOwner: {
     type: Boolean,
     default: false,
@@ -26,6 +31,14 @@ const userSchema = new mongoose.Schema({
   verified: {
     type: Boolean,
     default: false,
+  },
+  isOnline: {
+    type: Boolean,
+    default: false,
+  },
+  location: {
+    lat: { type: Number },
+    lng: { type: Number },
   },
 });
 

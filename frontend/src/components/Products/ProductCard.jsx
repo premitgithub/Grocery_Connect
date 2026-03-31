@@ -51,7 +51,7 @@ const ProductCard = ({ product, onClick }) => {
 
   return (
     <motion.div
-      className="bg-white shadow-md rounded-2xl overflow-hidden cursor-pointer hover:shadow-xl hover:scale-[1.03] transition-all duration-300"
+      className="bg-white dark:bg-slate-800 shadow-md rounded-2xl overflow-hidden cursor-pointer hover:shadow-xl hover:scale-[1.03] transition-all duration-300"
       onClick={() => onClick(product)}
     >
       <div className="relative">
@@ -60,27 +60,27 @@ const ProductCard = ({ product, onClick }) => {
           alt={product.name}
           className="w-full h-52 object-cover"
         />
-        <div className="absolute top-4 left-4 bg-white/70 px-3 py-1 rounded-full text-sm font-semibold">
+        <div className="absolute top-4 left-4 bg-white/70 dark:bg-slate-900/70 dark:text-gray-200 px-3 py-1 rounded-full text-sm font-semibold">
           {product.brand || ""}
         </div>
       </div>
 
       <div className="p-4 space-y-2">
-        <h3 className="text-lg font-semibold text-gray-800 line-clamp-1">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 line-clamp-1">
           {product.name}
         </h3>
-        <p className="text-sm text-gray-500 line-clamp-2">
+        <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
           {product.description}
         </p>
 
         <div className="flex justify-between items-center pt-2">
-          <p className="text-xl font-bold text-teal-700">₹{product.price}</p>
+          <p className="text-xl font-bold text-teal-700 dark:text-teal-400">₹{product.price}</p>
 
           <div className="flex items-center gap-2">
             {/* View button */}
             <button
               onClick={() => navigate(`/products/${product.name}`)}
-              className="text-sm px-3 py-1 border rounded-lg hover:bg-gray-100 cursor-pointer"
+              className="text-sm px-3 py-1 border dark:border-slate-600 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700 dark:text-gray-300 cursor-pointer transition-colors duration-300"
             >
               View
             </button>

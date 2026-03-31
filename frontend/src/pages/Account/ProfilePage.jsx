@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../context/UserContext";
-import ProfileField from "../../components/account/ProfileField";
-import AddressCard from "../../components/account/AddressCard";
+import ProfileField from "../../components/Account/ProfileField";
+import AddressCard from "../../components/Account/AddressCard";
 import { defaultProfile } from "../../data/defaultData";
 import toast from "react-hot-toast"; // ✅ import toast
 

@@ -5,16 +5,17 @@ import AnimatedHeroText from './../../animations/AnimatedHeroText';
 
 const HeroSection = () => {
   return (
-    <section className="relative flex flex-col md:flex-row items-center justify-between px-6 sm:px-10 md:px-20 py-12 md:py-20 bg-gradient-to-r from-teal-100 via-white to-emerald-100 overflow-hidden">
+    <section className="relative flex flex-col md:flex-row items-center justify-between px-6 sm:px-10 md:px-20 py-12 md:py-20 bg-gradient-to-r from-teal-100 via-white to-emerald-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-colors duration-300 overflow-hidden">
       {/* Left Text Section */}
       <div className="max-w-2xl text-center md:text-left space-y-6 md:space-y-8">
-        <AnimatedHeroText/>
+        <AnimatedHeroText />
 
         <div className="flex flex-col sm:flex-row justify-center md:justify-start gap-4 sm:gap-6 pt-4">
-          <Link to="/shops">
-            <button className="px-6 py-4 bg-teal-600 text-white text-lg sm:text-xl font-semibold rounded-3xl hover:bg-teal-800 transition cursor-pointer duration-500 shadow-md">
-              Explore Shops
-            </button>
+          <Link
+            to="/shops"
+            className="px-6 py-4 bg-teal-600 text-white text-lg sm:text-xl font-semibold rounded-3xl hover:bg-teal-800 transition cursor-pointer duration-500 shadow-md inline-block text-center"
+          >
+            Explore Shops
           </Link>
           <button className="px-6 py-4 text-lg sm:text-xl border border-teal-600 text-teal-700 font-semibold rounded-3xl hover:bg-white hover:shadow-md transition duration-500">
             Learn More

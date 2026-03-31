@@ -14,7 +14,7 @@ const ProductDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-900 transition-colors duration-300">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -28,17 +28,17 @@ const ProductDetailPage = () => {
 
   if (error || !product) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 text-red-500 text-lg">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-900 text-red-500 text-lg transition-colors duration-300">
         {error || "Product not found"}
       </div>
     );
   }
 
   return (
-    <motion.div
+      <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="min-h-screen bg-gradient-to-r from-teal-50 via-white to-emerald-50 py-10 px-4"
+      className="min-h-screen bg-gradient-to-r from-teal-50 via-white to-emerald-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-colors duration-300 py-10 px-4"
     >
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10">
         {/* Left - Image */}

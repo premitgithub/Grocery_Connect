@@ -4,9 +4,11 @@ import OtpInput from "./OtpInput";
 import { UserContext } from "../../context/UserContext";
 import ShopOwnerPopup from "../ShopOwnerPopUp/ShopOwnerPopup";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const PhoneAuthModal = ({ onClose }) => {
   const { setUser, loadCartFromDataBase } = useContext(UserContext);
+  const navigate = useNavigate();
   const [step, setStep] = useState("phone");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [otp, setOtp] = useState("");
@@ -74,6 +76,9 @@ const PhoneAuthModal = ({ onClose }) => {
           setUser(data.user);
           toast.success("Logged in successfully 🎉");
           onClose();
+          if (data.user?.role === "Delivery Partner") {
+            navigate("/delivery-dashboard");
+          }
         }
       } else {
         toast.error(data.message || "Invalid OTP");
@@ -110,14 +115,14 @@ const PhoneAuthModal = ({ onClose }) => {
   // };
 
   // ✅ Step 3: Role selection (from separate ShopOwnerPopup)
-  const handleRoleSelection = async (isShopOwner) => {
+  const handleRoleSelection = async (role) => {
     setLoading(true);
 
     try {
       const res = await fetch("http://localhost:5000/api/set-role", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phoneNumber, isShopOwner }),
+        body: JSON.stringify({ phoneNumber, role }),
       });
 
       const data = await res.json();
@@ -129,6 +134,9 @@ const PhoneAuthModal = ({ onClose }) => {
         toast.success("Logged in successfully 🎉");
         setShowRolePopup(false);
         onClose();
+        if (data.user?.role === "Delivery Partner") {
+          navigate("/delivery-dashboard");
+        }
       } else {
         toast.error(data.message || "Failed to update role");
       }
