@@ -95,19 +95,19 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  const addToCart = async (product) => {
+  const addToCart = async (product, quantity = 1, showToast = true) => {
     if (!user?.phoneNumber) {
-      toast.error("Please log in first");
+      if (showToast) toast.error("Please log in first");
       setShowLoginModal(true);
       return;
     }
     try {
-      await addToCartApi(user.phoneNumber, product);
+      await addToCartApi(user.phoneNumber, product, quantity);
       await loadCartFromDataBase();
-      toast.success("Added to cart!");
+      if (showToast) toast.success("Added to cart!");
     } catch (error) {
       console.error("Add to cart failed:", error);
-      toast.error("Something went wrong");
+      if (showToast) toast.error("Something went wrong");
     }
   };
 

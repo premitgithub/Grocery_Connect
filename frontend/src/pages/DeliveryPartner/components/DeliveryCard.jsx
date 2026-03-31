@@ -2,9 +2,13 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MapPinIcon, UserIcon, BasketIcon } from "./Icons";
 import DeliveryRouteMap from "./DeliveryRouteMap";
+import useLocationEmitter from "../../../hooks/useLocationEmitter";
 
 const DeliveryCard = ({ delivery, handleStatusUpdate }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+
+  // ── Broadcast GPS location to customer's Track Order page ─────────────────
+  useLocationEmitter({ orderId: delivery._id, status: delivery.status });
 
   const getStatusColor = (status) => {
     switch (status) {

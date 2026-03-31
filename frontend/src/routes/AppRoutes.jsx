@@ -11,6 +11,8 @@ import AddProductPage from "../pages/Shopkeeper/AddProductPage";
 import DeliveryDashboard from "../pages/DeliveryPartner/DeliveryDashboard";
 import CheckoutRoutes from "./CheckoutRoutes";
 import OrdersPage from "../pages/Orders/OrdersPage";
+import OrderDetailsPage from "../pages/Orders/OrderDetailsPage";
+import TrackOrderPage from "../pages/Orders/TrackOrderPage";
 
 const AppRoutes = () => {
   return (
@@ -23,6 +25,8 @@ const AppRoutes = () => {
         <Route path="/cart" element={<CartPage />} />
         <Route path="/checkout/*" element={<CheckoutRoutes />} />
         <Route path="/orders" element={<OrdersPage />} />
+        <Route path="/orders/:orderId" element={<OrderDetailsPage />} />
+        <Route path="/track/:orderId" element={<TrackOrderPage />} />
         <Route path="/*" element={<ShopRoutes />} />
         <Route path="/search" element={<SearchResultsPage />} />
         <Route path="/shop/add-product" element={<AddProductPage />} />

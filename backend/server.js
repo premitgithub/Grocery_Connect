@@ -1,14 +1,45 @@
 // backend/server.js
 import dotenv from "dotenv";
-dotenv.config(); // ✅ Load environment variables
+dotenv.config();
 
+import http from "http";
+import { Server } from "socket.io";
 import app from "./src/app.js";
 
 const PORT = process.env.PORT || 5000;
 
-// Debug log to verify .env is loaded
+// ── Create HTTP server wrapping Express ──────────────────────────────────────
+const httpServer = http.createServer(app);
+
+// ── Socket.IO server ─────────────────────────────────────────────────────────
+const io = new Server(httpServer, {
+  cors: { origin: "*", methods: ["GET", "POST"] },
+});
+
+io.on("connection", (socket) => {
+  console.log("🔌 Socket connected:", socket.id);
+
+  // Delivery partner joins a room scoped to the order they're delivering
+  socket.on("joinOrderRoom", ({ orderId }) => {
+    socket.join(`order_${orderId}`);
+    console.log(`📦 Socket ${socket.id} joined room: order_${orderId}`);
+  });
+
+  // Delivery partner emits their current GPS coordinates
+  // Payload: { orderId, latitude, longitude }
+  socket.on("locationUpdate", ({ orderId, latitude, longitude }) => {
+    // Broadcast to everyone watching this order (customers, admins)
+    socket.to(`order_${orderId}`).emit("partnerLocationUpdate", { latitude, longitude });
+  });
+
+  socket.on("disconnect", () => {
+    console.log("❌ Socket disconnected:", socket.id);
+  });
+});
+
+// ── Start ─────────────────────────────────────────────────────────────────────
 console.log("Loaded MONGO_URI:", process.env.MONGO_URI);
 
-app.listen(PORT, () => {
-  console.log(`✅ Server running on port ${PORT}`);
+httpServer.listen(PORT, () => {
+  console.log(`✅ Server running on port ${PORT} (HTTP + Socket.IO)`);
 });

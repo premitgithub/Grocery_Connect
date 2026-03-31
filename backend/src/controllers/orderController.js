@@ -77,7 +77,7 @@ export const getDeliveryOrders = async (req, res) => {
   }
 };
 
-// Fetch orders natively mapping strictly to standard user object IDs
+// Fetch personal orders strictly mapping to standard user object IDs
 export const getCustomerOrders = async (req, res) => {
   try {
     const customerId = req.user.id;
@@ -94,6 +94,39 @@ export const getCustomerOrders = async (req, res) => {
   } catch (error) {
     console.error("Error fetching customer orders:", error);
     res.status(500).json({ message: "Failed to fetch personal orders" });
+  }
+};
+
+// Fetch full details of a specific order
+export const getOrderById = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const userId = req.user.id;
+
+    if (!userId) return res.status(401).json({ message: "Unauthorized token" });
+
+    const order = await Order.findById(orderId)
+      .populate({ path: "items.product", select: "name price defaultImage imageUrl category desc" })
+      .populate("shop", "shopName name location")
+      .populate("deliveryPartner", "name phone location vehicleDetails avatar");
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    // Only allow customer, assigned partner, or shop to view it
+    const isCustomer = order.customer && order.customer.toString() === userId;
+    const isDeliveryPartner = order.deliveryPartner && order.deliveryPartner._id && order.deliveryPartner._id.toString() === userId;
+    const isShop = order.shop && order.shop._id && order.shop._id.toString() === userId;
+
+    if (!isCustomer && !isDeliveryPartner && !isShop) {
+      return res.status(403).json({ message: "Not authorized to view this order" });
+    }
+
+    res.status(200).json({ order });
+  } catch (error) {
+    console.error("Error fetching order by ID:", error);
+    res.status(500).json({ message: "Failed to fetch order details", error: error.message });
   }
 };
 

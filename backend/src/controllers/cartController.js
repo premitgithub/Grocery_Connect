@@ -15,16 +15,16 @@ export const getCartItems = async (req, res) => {
 
 export const addCartItems = async (req, res) => {
     try {
-        const { productId, phoneNumber } = req.body;
+        const { productId, phoneNumber, quantity = 1 } = req.body;
         const cartProduct = await Cart.findOne({ productId, userId: phoneNumber });
 
         if (cartProduct) {
-            cartProduct.quantity += 1
+            cartProduct.quantity += Number(quantity);
             await cartProduct.save();
 
             return res.json({
                 success: true,
-                message: "Quantity Incresed",
+                message: "Quantity Increased",
                 cartProduct
             })
         }
@@ -32,7 +32,7 @@ export const addCartItems = async (req, res) => {
         const newItem = await Cart.create({
             userId: phoneNumber,
             productId: productId,
-            quantity: 1
+            quantity: Number(quantity)
         })
 
         return res.json({
