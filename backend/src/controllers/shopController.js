@@ -52,6 +52,33 @@ export const getShopByOwner = async (req, res) => {
     }
 };
 
+// Update shop details for the logged-in shopkeeper
+export const updateShop = async (req, res) => {
+    try {
+        const owner = req.user.id;
+        const { name, description, address, image } = req.body;
+
+        let shop = await Shop.findOne({ owner });
+        
+        if (!shop) {
+            return res.status(404).json({ message: "Shop not found for this user." });
+        }
+
+        // Apply string updates safely
+        if (name !== undefined) shop.name = name;
+        if (description !== undefined) shop.description = description;
+        if (address !== undefined) shop.address = address;
+        if (image !== undefined) shop.image = image;
+
+        await shop.save();
+
+        res.status(200).json({ message: "Shop details updated successfully!", shop });
+    } catch (error) {
+        console.error("Error updating shop:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
 // Get all shops
 export const getAllShops = async (req, res) => {
     try {

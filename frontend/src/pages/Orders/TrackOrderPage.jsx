@@ -4,14 +4,14 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import { FiArrowLeft, FiMapPin } from "react-icons/fi";
 
-import { UserContext }    from "../../context/UserContext";
+import { UserContext } from "../../context/UserContext";
 import useDeliverySocket, { haversineKm, etaString } from "../../hooks/useDeliverySocket";
-import PageLoader         from "./components/shared/PageLoader";
-import PageError          from "./components/shared/PageError";
-import TrackHeader        from "./components/track/TrackHeader";
-import OrderTimeline      from "./components/track/OrderTimeline";
-import DeliveryInfoCard   from "./components/track/DeliveryInfoCard";
-import TrackingMap        from "./components/track/TrackingMap";
+import PageLoader from "./components/shared/PageLoader";
+import PageError from "./components/shared/PageError";
+import TrackHeader from "./components/track/TrackHeader";
+import OrderTimeline from "./components/track/OrderTimeline";
+import DeliveryInfoCard from "./components/track/DeliveryInfoCard";
+import TrackingMap from "./components/track/TrackingMap";
 
 // ─── Interpolation helper (for simulated movement fallback) ───────────────────
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -21,19 +21,19 @@ const IN_TRANSIT = ["Picked Up", "Out for Delivery"];
 // ─── Page ─────────────────────────────────────────────────────────────────────
 const TrackOrderPage = () => {
   const { orderId } = useParams();
-  const navigate    = useNavigate();
-  const { user }    = useContext(UserContext);
+  const navigate = useNavigate();
+  const { user } = useContext(UserContext);
 
-  const [order,         setOrder]         = useState(null);
-  const [isLoading,     setIsLoading]     = useState(true);
-  const [error,         setError]         = useState("");
-  const [routeCoords,   setRouteCoords]   = useState([]);
-  const [routeStats,    setRouteStats]    = useState(null);
+  const [order, setOrder] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [routeCoords, setRouteCoords] = useState([]);
+  const [routeStats, setRouteStats] = useState(null);
   const [lastRefreshed, setLastRefreshed] = useState(null);
 
   // Simulated partner position (used when socket has no real data yet)
-  const [simPos,     setSimPos]     = useState(null);
-  const simRef      = useRef(null);
+  const [simPos, setSimPos] = useState(null);
+  const simRef = useRef(null);
   const simProgress = useRef(0);
 
   const isInTransit = IN_TRANSIT.includes(order?.status);
@@ -99,7 +99,7 @@ const TrackOrderPage = () => {
 
     (async () => {
       try {
-        const res  = await fetch(
+        const res = await fetch(
           `https://router.project-osrm.org/route/v1/driving/${pu.lng},${pu.lat};${dr.lng},${dr.lat}?overview=full&geometries=geojson`
         );
         const data = await res.json();
@@ -151,11 +151,11 @@ const TrackOrderPage = () => {
     }
 
     return () => { if (simRef.current) { clearInterval(simRef.current); simRef.current = null; } };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order?.status, order?.pickupLocation, order?.dropLocation, order?.deliveryPartner?.location, livePos]);
 
   // ── Guard renders ──────────────────────────────────────────────────────────
-  if (isLoading)       return <PageLoader message="Loading tracking info..." />;
+  if (isLoading) return <PageLoader message="Loading tracking info..." />;
   if (error || !order) return <PageError message={error} emoji="🚫" backTo="/orders" />;
 
   // Live ETA takes priority; fall back to static route ETA

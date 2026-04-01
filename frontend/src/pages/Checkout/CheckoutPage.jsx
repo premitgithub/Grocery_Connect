@@ -64,17 +64,22 @@ const CheckoutPage = () => {
     }
   }, [user, addresses.length, setAddresses]);
 
-  const placeOrderInBackend = async (payload) => {
+  const placeOrdersInBackend = async (payloads) => {
+    let successCount = 0;
     try {
-      const response = await axios.post("http://localhost:5000/api/orders", payload);
-      if (response.data) {
-        toast.success(`Order placed successfully via ${paymentMethod}!`);
+      for (const payload of payloads) {
+        await axios.post("http://localhost:5000/api/orders", payload);
+        successCount++;
+      }
+      if (successCount > 0) {
+        toast.success(`Order(s) placed successfully via ${paymentMethod}!`);
         clearCartItems();
         navigate("/");
       }
     } catch (error) {
-      console.error("Failed to post order:", error);
-      toast.error("Failed to sync order internally. Please contact support.");
+      console.error("Failed to post orders:", error);
+      const errorMessage = error.response?.data?.message || "Failed to sync order internally. Please contact support.";
+      toast.error(errorMessage);
     } finally {
       setIsProcessingCod(false);
       setIsModalOpen(false); // Make sure modal closes safely eventually
@@ -97,17 +102,35 @@ const CheckoutPage = () => {
         ? `${selectedAddress.apartmentNo}, ${selectedAddress.area}, ${selectedAddress.pincode}`
         : `${selectedAddress.street}, ${selectedAddress.city}, ${selectedAddress.zipCode}`;
 
-      const orderPayload = {
-        shop: cart[0]?.product?.shop || "65d8a0c20f18820c7d413b5e",
-        customer: user?._id || "CUSTOMER_ID",
-        items: cart.map((item) => ({ product: item.product._id, quantity: item.qty })),
-        totalAmount,
-        deliveryAddress: addressStr,
-        paymentMode: "COD",
-        paymentStatus: "Pending",
-      };
+      const shopGroups = {};
+      cart.forEach((item) => {
+        const shopId = item.product?.shop?._id || item.product?.shop;
+        if (!shopId) return; // Ignore legacy products without shop mapping
+        if (!shopGroups[shopId]) shopGroups[shopId] = [];
+        shopGroups[shopId].push(item);
+      });
 
-      await placeOrderInBackend(orderPayload);
+      const payloads = Object.keys(shopGroups).map((shopId) => {
+        const items = shopGroups[shopId];
+        const shopSubtotal = items.reduce((sum, item) => sum + Number(item.product?.price || 0) * item.qty, 0);
+        return {
+          shop: shopId,
+          customer: user?._id || "CUSTOMER_ID",
+          items: items.map((item) => ({ product: item.product._id, quantity: item.qty })),
+          totalAmount: shopSubtotal + deliveryFee,
+          deliveryAddress: addressStr,
+          paymentMode: "COD",
+          paymentStatus: "Pending",
+        };
+      });
+
+      if (payloads.length === 0) {
+        toast.error("Products missing shop assignments. Contact support.");
+        setIsProcessingCod(false);
+        return;
+      }
+      
+      await placeOrdersInBackend(payloads);
     } else {
       // Unfurl Modal instead of inline
       setIsModalOpen(true);
@@ -119,17 +142,31 @@ const CheckoutPage = () => {
       ? `${selectedAddress.apartmentNo}, ${selectedAddress.area}, ${selectedAddress.pincode}`
       : `${selectedAddress.street}, ${selectedAddress.city}, ${selectedAddress.zipCode}`;
 
-    const orderPayload = {
-      shop: cart[0]?.product?.shop || "65d8a0c20f18820c7d413b5e",
-      customer: user?._id || "CUSTOMER_ID",
-      items: cart.map((item) => ({ product: item.product._id, quantity: item.qty })),
-      totalAmount,
-      deliveryAddress: addressStr,
-      paymentMode: paymentMethod,
-      paymentStatus: "Success (Simulated)",
-    };
+    const shopGroups = {};
+    cart.forEach((item) => {
+      const shopId = item.product?.shop?._id || item.product?.shop;
+      if (!shopId) return;
+      if (!shopGroups[shopId]) shopGroups[shopId] = [];
+      shopGroups[shopId].push(item);
+    });
 
-    placeOrderInBackend(orderPayload);
+    const payloads = Object.keys(shopGroups).map((shopId) => {
+      const items = shopGroups[shopId];
+      const shopSubtotal = items.reduce((sum, item) => sum + Number(item.product?.price || 0) * item.qty, 0);
+      return {
+        shop: shopId,
+        customer: user?._id || "CUSTOMER_ID",
+        items: items.map((item) => ({ product: item.product._id, quantity: item.qty })),
+        totalAmount: shopSubtotal + deliveryFee,
+        deliveryAddress: addressStr,
+        paymentMode: paymentMethod,
+        paymentStatus: "Paid",
+      };
+    });
+
+    if (payloads.length > 0) {
+      placeOrdersInBackend(payloads);
+    }
   };
 
   return (

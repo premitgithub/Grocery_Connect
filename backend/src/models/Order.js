@@ -37,8 +37,8 @@ const orderSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["Pending", "Accepted", "Picked Up", "Delivered", "Rejected"],
-      default: "Pending",
+      enum: ["Under Review", "Pending", "Accepted", "Picked Up", "Out for Delivery", "Delivered", "Rejected"],
+      default: "Under Review",
     },
     rejectedBy: [
       {
@@ -56,7 +56,7 @@ const orderSchema = new mongoose.Schema(
     },
     paymentStatus: {
       type: String,
-      enum: ["Pending", "Success", "Failed", "Success (Simulated)"],
+      enum: ["Pending", "Success", "Failed", "Success (Simulated)", "Paid"],
       default: "Pending",
     },
     // Adding denormalized names to avoid excessive populations for UI simplicity

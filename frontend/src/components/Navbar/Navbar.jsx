@@ -5,12 +5,17 @@ import { FiSearch, FiShoppingCart, FiUser } from "react-icons/fi";
 import { UserContext } from "../../context/UserContext";
 import SearchBar from "./SearchBar";
 import UserDropdown from "./UserDropdown";
+import { NotificationContext } from "../../context/NotificationContext";
+import { FiBell } from "react-icons/fi";
+import NotificationDropdown from "./NotificationDropdown";
 
 const Navbar = ({ onLoginClick }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   const { user } = useContext(UserContext);
+  const { unreadCount } = useContext(NotificationContext);
 
   const { totalItems } = useContext(UserContext);
 
@@ -36,12 +41,35 @@ const Navbar = ({ onLoginClick }) => {
         </div>
       ),
     },
+    {
+      label: "Notifications",
+      action: () => setShowNotifications(!showNotifications),
+      icon: (
+        <div className="relative">
+          <FiBell className="text-teal-600 text-3xl" />
+          {unreadCount > 0 && (
+            <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow">
+              {unreadCount}
+            </span>
+          )}
+          {showNotifications && (
+            <div className="absolute right-0 mt-4 origin-top-right">
+              <NotificationDropdown isOpen={showNotifications} onClose={() => setShowNotifications(false)} />
+            </div>
+          )}
+        </div>
+      ),
+    },
   ];
 
   if (user?.isShopOwner) {
     menuItems.unshift({
       label: "Add Product",
       action: () => navigate("/shop/add-product"),
+    });
+    menuItems.unshift({
+      label: "Shop Dashboard",
+      action: () => navigate("/shop-dashboard"),
     });
   }
 

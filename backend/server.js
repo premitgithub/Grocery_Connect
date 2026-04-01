@@ -16,13 +16,23 @@ const io = new Server(httpServer, {
   cors: { origin: "*", methods: ["GET", "POST"] },
 });
 
+// Make io accessible globally via req.app.get("io")
+app.set("io", io);
 io.on("connection", (socket) => {
   console.log("🔌 Socket connected:", socket.id);
+
+  // Authenticated user joins their personal room for direct notification delivery
+  socket.on("joinUserRoom", ({ userId }) => {
+    if (userId) {
+      socket.join(`user_${userId}`);
+      console.log(`👤 Socket ${socket.id} joined personal room: user_${userId}`);
+    }
+  });
 
   // Delivery partner joins a room scoped to the order they're delivering
   socket.on("joinOrderRoom", ({ orderId }) => {
     socket.join(`order_${orderId}`);
-    console.log(`📦 Socket ${socket.id} joined room: order_${orderId}`);
+    console.log(`📦 Socket ${socket.id} joined order room: order_${orderId}`);
   });
 
   // Delivery partner emits their current GPS coordinates

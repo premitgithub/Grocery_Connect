@@ -5,14 +5,15 @@ import {
 } from "react-icons/fi";
 
 const STEPS = [
-  { key: "Pending",          label: "Order Placed",     icon: FiShoppingBag, desc: "Your order has been placed and is awaiting confirmation." },
-  { key: "Accepted",         label: "Accepted",         icon: FiPackage,     desc: "A delivery partner has accepted your order." },
+  { key: "Under Review",     label: "Order Placed",     icon: FiShoppingBag, desc: "Your order has been placed and is awaiting store confirmation." },
+  { key: "Pending",          label: "Shop Accepted",    icon: FiPackage,     desc: "The shop has accepted your order." },
+  { key: "Accepted",         label: "Driver Assigned",  icon: FiTruck,       desc: "A delivery partner has accepted your order." },
   { key: "Picked Up",        label: "Picked Up",        icon: FiTruck,       desc: "Your order has been picked up from the shop." },
   { key: "Out for Delivery", label: "Out for Delivery", icon: FiMapPin,      desc: "Your order is on the way! 🚀" },
   { key: "Delivered",        label: "Delivered",        icon: FiHome,        desc: "Order delivered successfully. Enjoy your groceries! 🎉" },
 ];
 
-export const STATUS_ORDER = ["Pending", "Accepted", "Picked Up", "Out for Delivery", "Delivered"];
+export const STATUS_ORDER = ["Under Review", "Pending", "Accepted", "Picked Up", "Out for Delivery", "Delivered"];
 
 /**
  * Vertical animated stepper showing order progress.

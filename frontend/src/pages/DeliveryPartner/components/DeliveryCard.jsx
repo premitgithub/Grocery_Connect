@@ -15,6 +15,7 @@ const DeliveryCard = ({ delivery, handleStatusUpdate }) => {
       case "Pending": return "bg-yellow-100 text-yellow-800 border-yellow-200";
       case "Accepted": return "bg-teal-100 text-teal-800 border-teal-200";
       case "Picked Up": return "bg-blue-100 text-blue-800 border-blue-200";
+      case "Out for Delivery": return "bg-purple-100 text-purple-800 border-purple-200";
       case "Delivered": return "bg-green-100 text-green-800 border-green-200";
       case "Rejected": return "bg-red-100 text-red-800 border-red-200";
       default: return "bg-gray-100 text-gray-800 border-gray-200";
@@ -26,6 +27,7 @@ const DeliveryCard = ({ delivery, handleStatusUpdate }) => {
       case "Pending": return "bg-green-600 hover:bg-green-700 text-white cursor-pointer";
       case "Accepted": return "bg-teal-600 hover:bg-teal-700 text-white cursor-pointer";
       case "Picked Up": return "bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer";
+      case "Out for Delivery": return "bg-purple-600 hover:bg-purple-700 text-white cursor-pointer";
       case "Delivered": return "bg-gray-300 text-gray-500 cursor-not-allowed";
       default: return "bg-gray-300 text-black";
     }
@@ -123,8 +125,25 @@ const DeliveryCard = ({ delivery, handleStatusUpdate }) => {
 
           {delivery.status === "Picked Up" && (
             <button
-              onClick={() => handleStatusUpdate(delivery._id, "Delivered")}
+              onClick={() => handleStatusUpdate(delivery._id, "Out for Delivery")}
               className={`w-full md:w-auto px-8 py-3 rounded-xl font-bold shadow-sm transition-all duration-300 transform active:scale-95 cursor-pointer ${getButtonStyle("Picked Up")}`}
+            >
+              Mark as Out for Delivery
+            </button>
+          )}
+
+          {delivery.status === "Out for Delivery" && (
+            <button
+              onClick={() => {
+                if (delivery.paymentMode === "COD") {
+                  if (window.confirm("Cash received?")) {
+                    handleStatusUpdate(delivery._id, "Delivered");
+                  }
+                } else {
+                  handleStatusUpdate(delivery._id, "Delivered");
+                }
+              }}
+              className={`w-full md:w-auto px-8 py-3 rounded-xl font-bold shadow-sm transition-all duration-300 transform active:scale-95 cursor-pointer ${getButtonStyle("Out for Delivery")}`}
             >
               Mark as Delivered
             </button>

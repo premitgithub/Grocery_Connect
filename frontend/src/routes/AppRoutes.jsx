@@ -8,6 +8,7 @@ import CartPage from "../pages/Cart/CartPage";
 import ShopRoutes from "./ShopRoutes";
 import SearchResultsPage from "../pages/SearchResultsPage";
 import AddProductPage from "../pages/Shopkeeper/AddProductPage";
+import ShopDashboard from "../pages/Shopkeeper/ShopDashboard";
 import DeliveryDashboard from "../pages/DeliveryPartner/DeliveryDashboard";
 import CheckoutRoutes from "./CheckoutRoutes";
 import OrdersPage from "../pages/Orders/OrdersPage";
@@ -30,6 +31,7 @@ const AppRoutes = () => {
         <Route path="/*" element={<ShopRoutes />} />
         <Route path="/search" element={<SearchResultsPage />} />
         <Route path="/shop/add-product" element={<AddProductPage />} />
+        <Route path="/shop-dashboard" element={<ShopDashboard />} />
       </Route>
     </Routes>
   );
