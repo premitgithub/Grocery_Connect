@@ -1,18 +1,30 @@
-import React from "react";
-import { Routes, Route } from "react-router-dom";
-import HomePage from "./pages/HomePage";
-import Login from "./pages/Login";
-import { UserProvider } from "./context/UserContext";
+import React, { useEffect, useContext } from "react";
+import { Toaster } from "react-hot-toast";
+import { UserContext } from "./context/UserContext";
+import AppRoutes from "./routes/AppRoutes";
+import ThemeToggle from "./components/ThemeToggle";
+import ChatbotWidget from "./components/Chatbot/ChatbotWidget";
 
 const App = () => {
+  const { setUser } = useContext(UserContext);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
+    if (token && user) {
+      setUser(JSON.parse(user));
+    }
+  }, [setUser]);
+
   return (
-    <UserProvider>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<Login />} />
-      </Routes>
-    </UserProvider>
+    <>
+      <AppRoutes />
+      <ThemeToggle />
+      <Toaster position="top-center" reverseOrder={false} />
+      <ChatbotWidget />
+    </>
   );
 };
 
 export default App;
+

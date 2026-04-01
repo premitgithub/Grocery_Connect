@@ -1,62 +1,173 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { FaHome, FaBars, FaTimes } from "react-icons/fa";
+import { FiSearch, FiShoppingCart, FiUser } from "react-icons/fi";
+import { UserContext } from "../../context/UserContext";
+import SearchBar from "./SearchBar";
+import UserDropdown from "./UserDropdown";
+import { NotificationContext } from "../../context/NotificationContext";
+import { FiBell } from "react-icons/fi";
+import NotificationDropdown from "./NotificationDropdown";
 
-const Navbar = ({ onNavigate }) => {
-  const [menuOpen, setMenuOpen] = useState(false);
+const Navbar = ({ onLoginClick }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const { user } = useContext(UserContext);
+  const { unreadCount } = useContext(NotificationContext);
+
+  const { totalItems } = useContext(UserContext);
+
+  const menuItems = [
+    { label: "Products", action: () => navigate("/products") },
+    { label: "Orders", action: () => navigate("/orders") },
+    {
+      label: "Search",
+      icon: <FiSearch className="text-teal-600 text-3xl" />,
+      action: () => setShowSearch(true),
+    },
+    {
+      label: "Cart",
+      action: () => navigate("/cart"),
+      icon: (
+        <div className="relative">
+          <FiShoppingCart className="text-teal-600 text-3xl" />
+          {totalItems > 0 && (
+            <span className="absolute -bottom-1 -right-2 bg-red-500 text-white text-xs font-semibold px-1.5 py-0.5 rounded-full shadow">
+              {totalItems}
+            </span>
+          )}
+        </div>
+      ),
+    },
+    {
+      label: "Notifications",
+      action: () => setShowNotifications(!showNotifications),
+      icon: (
+        <div className="relative">
+          <FiBell className="text-teal-600 text-3xl" />
+          {unreadCount > 0 && (
+            <span className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow">
+              {unreadCount}
+            </span>
+          )}
+          {showNotifications && (
+            <div className="absolute right-0 mt-4 origin-top-right">
+              <NotificationDropdown isOpen={showNotifications} onClose={() => setShowNotifications(false)} />
+            </div>
+          )}
+        </div>
+      ),
+    },
+  ];
+
+  if (user?.isShopOwner) {
+    menuItems.unshift({
+      label: "Add Product",
+      action: () => navigate("/shop/add-product"),
+    });
+    menuItems.unshift({
+      label: "Shop Dashboard",
+      action: () => navigate("/shop-dashboard"),
+    });
+  }
+
+  const navigate = useNavigate();
+
+  const home = () => {
+    navigate("/");
+  };
 
   return (
-    <nav className="w-full bg-white shadow-md px-8 py-5 flex items-center justify-between border-b border-zinc-300 relative">
+    <nav className="sticky top-0 z-50 w-full bg-white dark:bg-slate-900 shadow-md px-8 py-5 flex items-center justify-between border-b border-zinc-300 dark:border-slate-800 transition-colors duration-300">
       {/* Logo */}
-      <div
-        className="flex items-center space-x-3 cursor-pointer"
-        onClick={onNavigate}
-      >
+      <div className="flex items-center space-x-3 cursor-pointer">
         <FaHome className="text-2xl text-emerald-600" />
-        <span className="text-xl font-bold text-gray-900">Grocery Connect</span>
+        <span onClick={home} className="text-2xl font-bold text-gray-900 dark:text-white">
+          Grocera
+        </span>
       </div>
 
       {/* Desktop Menu */}
-      <div className="hidden md:flex space-x-6 cursor-pointer text-gray-800 font-medium">
-        {["Home", "Products", "Orders", "Search", "Cart", "Login"].map(
-          (label) => (
+      <div className="hidden md:flex items-center space-x-6 text-gray-800 font-medium">
+        {menuItems.map((item) => (
+          <button
+            key={item.label}
+            onClick={item.action}
+            className="px-6 py-3 rounded-xl hover:bg-emerald-100 dark:hover:bg-slate-800 text-2xl cursor-pointer transition duration-500 flex items-center gap-2"
+          >
+            {item.icon && <span>{item.icon}</span>}
+            {!item.icon && <span className="dark:text-gray-200">{item.label}</span>}
+          </button>
+        ))}
+
+        {/* Auth/User */}
+        {user?.verified ? (
+          <div className="relative">
             <button
-              key={label}
-              onClick={onNavigate}
-              className="px-6 py-3 rounded-xl text-2xl cursor-pointer hover:bg-emerald-200 transition duration-500"
+              title={user?.phoneNumber}
+              onClick={() => setShowDropdown(!showDropdown)}
+              className="flex items-center justify-center w-11 h-11 border-2 border-emerald-600 text-teal-600 rounded-full hover:bg-emerald-50 transition duration-500"
             >
-              {label}
+              <FiUser className="text-3xl cursor-pointer" />
             </button>
-          )
+
+            {/* Modular Dropdown */}
+            <UserDropdown
+              isOpen={showDropdown}
+              onClose={() => setShowDropdown(false)}
+            />
+          </div>
+        ) : (
+          <button
+            onClick={onLoginClick}
+            className="px-5 py-4 bg-teal-600 text-white rounded-xl hover:bg-teal-700 cursor-pointer text-2xl transition duration-500"
+          >
+            Login / Signup
+          </button>
         )}
       </div>
 
-      {/* Hamburger Icon (Mobile) */}
-      <div
-        className="md:hidden text-3xl text-emerald-700 cursor-pointer"
-        onClick={() => setMenuOpen(!menuOpen)}
+      {/* Mobile Menu Toggle */}
+      <button
+        className="md:hidden text-2xl text-emerald-600"
+        onClick={() => setIsOpen(!isOpen)}
       >
-        {menuOpen ? <FaTimes /> : <FaBars />}
-      </div>
+        {isOpen ? <FaTimes /> : <FaBars />}
+      </button>
 
       {/* Mobile Menu */}
-      {menuOpen && (
-        <div className="absolute top-full left-0 w-full bg-white border-t border-gray-200 shadow-lg flex flex-col items-center space-y-4 py-6 md:hidden animate-slideDown z-50">
-          {["Home", "Products", "Orders", "Search", "Cart", "Login"].map(
-            (label) => (
-              <button
-                key={label}
-                onClick={() => {
-                  onNavigate();
-                  setMenuOpen(false);
-                }}
-                className="text-gray-800 text-lg hover:text-emerald-700 cursor-pointer transition duration-300"
-              >
-                {label}
-              </button>
-            )
+      {isOpen && (
+        <div className="absolute top-20 left-0 w-full bg-white dark:bg-slate-900 shadow-lg flex flex-col items-center space-y-4 py-4 z-40 transition-colors duration-300">
+          {menuItems.map((item) => (
+            <button
+              key={item.label}
+              onClick={item.action}
+              className="flex items-center gap-3 text-2xl text-gray-800 dark:text-gray-200 hover:text-emerald-700 dark:hover:text-emerald-400 transition duration-300"
+            >
+              {item.icon && <span>{item.icon}</span>}
+              {item.label}
+            </button>
+          ))}
+          {user?.verified ? (
+            <button className="flex items-center gap-2 text-teal-700 font-semibold">
+              <FiUser className="text-2xl" />
+              Profile
+            </button>
+          ) : (
+            <button
+              onClick={onLoginClick}
+              className="bg-emerald-600 text-white px-6 py-2 rounded-xl hover:bg-emerald-700 text-2xl transition duration-500"
+            >
+              Login / Signup
+            </button>
           )}
         </div>
       )}
+
+      {/* Search Bar */}
+      <SearchBar isOpen={showSearch} onClose={() => setShowSearch(false)} />
     </nav>
   );
 };

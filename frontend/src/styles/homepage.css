@@ -25,3 +25,29 @@
 .animate-scroll-reverse {
   animation: scroll-reverse 30s linear infinite;
 }
+
+/* pause animation on hover */
+.pause-scroll {
+  animation-play-state: paused !important;
+}
+
+/* Hide scrollbar for a cleaner UI */
+.shop-scroll::-webkit-scrollbar {
+  display: none;
+}
+.shop-scroll {
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Optional smooth touch scroll */
+.shop-scroll {
+  scroll-behavior: smooth;
+}
+
+.product-scroll::-webkit-scrollbar {
+  display: none;
+}
+.product-scroll {
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+}

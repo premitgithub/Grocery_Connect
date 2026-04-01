@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { AnimatePresence, motion } from "framer-motion";
+
 import Navbar from "../components/Navbar/Navbar";
 import HeroSection from "../components/HomePage/HeroSection";
 import ShopHighlights from "../components/HomePage/ShopHighlights";
@@ -13,40 +14,34 @@ import TestimonialsSection from "../components/HomePage/TestimonialsSection";
 import CTASection from "../components/HomePage/CTASection";
 import AboutSection from "../components/HomePage/AboutSection";
 import Footer from "../components/HomePage/Footer";
-import LoginModal from "../components/LoginModal/LoginModal";
+
 import Loader from "../components/PageLoader/Loader";
-import ShopOwnerPopup from "../components/ShopOwnerPopup/ShopOwnerPopup";
+import { PhoneAuthModal } from "../components/Auth";
+import { UserContext } from "../context/UserContext";
 
 const HomePage = () => {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [showOwnerPopup, setShowOwnerPopup] = useState(false);
-  const [isShopOwner, setIsShopOwner] = useState(null);
   const navigate = useNavigate();
+  const { user } = useContext(UserContext);
 
   const handleLoginSuccess = () => {
+    // Close modal first
     setIsLoginOpen(false);
 
-    // show popup instead of directly loading
+    // Simulate loader before redirect
     setTimeout(() => {
-      setShowOwnerPopup(true);
-    }, 400);
-  };
-
-  const handleOwnerSelection = (isOwner) => {
-    setShowOwnerPopup(false);
-    setIsShopOwner(isOwner);
-
-    // then show loader and navigate
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      navigate("/"); // homepage reload
-    }, 1500);
+      setIsLoading(true);
+      setTimeout(() => {
+        setIsLoading(false);
+        navigate("/"); // redirect to homepage again
+      }, 1500);
+    }, 300);
   };
 
   return (
-    <div className="relative min-h-screen bg-teal-50 overflow-hidden">
+    <div className="relative min-h-screen bg-teal-50 dark:bg-slate-900 transition-colors duration-300 overflow-hidden">
+      {/* Main Content */}
       <motion.div
         className={`transition-all duration-500 ${
           isLoading
@@ -54,7 +49,7 @@ const HomePage = () => {
             : "blur-none opacity-100"
         }`}
       >
-        <Navbar onNavigate={() => setIsLoginOpen(true)} />
+        {/* <Navbar onLoginClick={() => setIsLoginOpen(true)} /> */}
         <HeroSection />
         <ShopHighlights />
         <CategoriesSection />
@@ -63,16 +58,19 @@ const HomePage = () => {
         <StatsSection />
         <DownloadAppSection />
         <TestimonialsSection />
-        {/* 👇 Show CTASection only if user is a shop owner */}
-        {isShopOwner && <CTASection />}
-        <AboutSection />
-        <Footer />
+
+        {/* Conditionally show CTA only if shop owner */}
+        {user?.isShopOwner && <CTASection />}
+
+        {/* <AboutSection />
+        <Footer /> */}
       </motion.div>
 
+      {/* Loader Overlay */}
       <AnimatePresence>
         {isLoading && (
           <motion.div
-            className="fixed inset-0 bg-white/50 backdrop-blur-md z-50"
+            className="fixed inset-0 bg-white/60 backdrop-blur-md z-50"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -83,18 +81,16 @@ const HomePage = () => {
         )}
       </AnimatePresence>
 
+      {/* Login / Signup Popup */}
       <AnimatePresence mode="wait">
         {isLoginOpen && (
-          <LoginModal
-            onClose={() => setIsLoginOpen(false)}
-            onLoginSuccess={handleLoginSuccess}
+          <PhoneAuthModal
+            onClose={() => {
+              setIsLoginOpen(false);
+              handleLoginSuccess();
+            }}
           />
         )}
-      </AnimatePresence>
-
-      {/* 👇 Shop owner popup */}
-      <AnimatePresence>
-        {showOwnerPopup && <ShopOwnerPopup onSelect={handleOwnerSelection} />}
       </AnimatePresence>
     </div>
   );

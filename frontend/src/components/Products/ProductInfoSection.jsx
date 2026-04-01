@@ -1,0 +1,46 @@
+import React, { useContext } from "react";
+import { motion } from "framer-motion";
+import { UserContext } from "../../context/UserContext";
+import toast from "react-hot-toast";
+
+const ProductInfoSection = ({ product }) => {
+  const { addToCart } = useContext(UserContext);
+
+  const handleAddToCart = () => {
+    addToCart(product);
+    toast.success(`${product.name} added to cart!`);
+  };
+
+  return (
+    <motion.div
+      initial={{ x: 40, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      transition={{ duration: 0.4 }}
+      className="bg-white dark:bg-slate-800 p-10 rounded-2xl shadow-xl space-y-5 transition-colors duration-300"
+    >
+      <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200">{product.name}</h1>
+
+      <p className="text-teal-600 dark:text-teal-400 text-2xl font-semibold">
+        ₹{product.price?.toLocaleString()}
+      </p>
+
+      <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{product.description}</p>
+
+      <div className="flex gap-2 items-center">
+        <span className="text-yellow-500 text-xl">
+          ⭐ {product.rating || 4.5}
+        </span>
+        <span className="text-gray-500 dark:text-gray-400">{product.reviews || 100}(reviews)</span>
+      </div>
+
+      <button
+        onClick={handleAddToCart}
+        className="bg-teal-600 hover:bg-teal-700 text-white px-8 py-3 rounded-lg text-lg font-semibold duration-300 cursor-pointer"
+      >
+        Add to Cart
+      </button>
+    </motion.div>
+  );
+};
+
+export default ProductInfoSection;

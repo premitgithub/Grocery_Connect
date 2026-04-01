@@ -1,0 +1,231 @@
+import React, { useState, useContext } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import OtpInput from "./OtpInput";
+import { UserContext } from "../../context/UserContext";
+import ShopOwnerPopup from "../ShopOwnerPopUp/ShopOwnerPopup";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+
+const PhoneAuthModal = ({ onClose }) => {
+  const { setUser, loadCartFromDataBase } = useContext(UserContext);
+  const navigate = useNavigate();
+  const [step, setStep] = useState("phone");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [otp, setOtp] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [showRolePopup, setShowRolePopup] = useState(false);
+
+  // Step 1: Send OTP
+  const handleSendOtp = async () => {
+    if (!phoneNumber.match(/^[6-9]\d{9}$/)) {
+      toast.error("Enter a valid 10-digit phone number.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await fetch("http://localhost:5000/api/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phoneNumber }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        // For demo
+        toast.success(`OTP Generated: ${data.otp}`);
+        setStep("otp");
+      } else {
+        toast.error(data.message || "Failed to send OTP");
+      }
+      await loadCartFromDataBase();
+    } catch (error) {
+      toast.error("Something went wrong!");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Step 2: Verify OTP
+  const handleVerifyOtp = async () => {
+    if (otp.length !== 6) {
+      toast.error("Please enter the 6-digit OTP.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await fetch("http://localhost:5000/api/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phoneNumber, otp }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        // Save token and user in localStorage for session persistence
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        // OTP verified — show role selection
+        if (data.isNewUser) {
+          setShowRolePopup(true);
+        } else {
+          setUser(data.user);
+          toast.success("Logged in successfully 🎉");
+          onClose();
+          if (data.user?.role === "Delivery Partner") {
+            navigate("/delivery-dashboard");
+          }
+        }
+      } else {
+        toast.error(data.message || "Invalid OTP");
+      }
+    } catch (error) {
+      console.log(error)
+      toast.error("Something went wrong!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  //   Step 3: Role selection (from separate ShopOwnerPopup)
+  // const handleRoleSelection = (isShopOwner) => {
+  //   const userData = {
+  //     phone,
+  //     isShopOwner,
+  //     verified: true,
+  //   };
+
+  //   setUser(userData);
+
+  //   localStorage.setItem("user", JSON.stringify(userData));
+
+
+  //   setShowRolePopup(false);
+  //   setLoading(true);
+
+  //   setTimeout(() => {
+  //     setLoading(false);
+  //     toast.success("Logged in successfully 🎉");
+  //     onClose();
+  //   }, 1000);
+  // };
+
+  // ✅ Step 3: Role selection (from separate ShopOwnerPopup)
+  const handleRoleSelection = async (role) => {
+    setLoading(true);
+
+    try {
+      const res = await fetch("http://localhost:5000/api/set-role", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phoneNumber, role }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setUser(data.user);
+        localStorage.setItem("user", JSON.stringify(data.user));
+
+        toast.success("Logged in successfully 🎉");
+        setShowRolePopup(false);
+        onClose();
+        if (data.user?.role === "Delivery Partner") {
+          navigate("/delivery-dashboard");
+        }
+      } else {
+        toast.error(data.message || "Failed to update role");
+      }
+    } catch (err) {
+      toast.error("Something went wrong!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
+        <motion.div
+          className="bg-white rounded-2xl shadow-2xl p-8 w-[90%] max-w-md relative"
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.9, opacity: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-5 text-gray-500 cursor-pointer hover:text-gray-800 duration-200 font-extrabold"
+          >
+            ✕
+          </button>
+
+          {loading ? (
+            <div className="text-center py-10">⏳ Processing...</div>
+          ) : (
+            <>
+              {step === "phone" && (
+                <div className="space-y-5">
+                  <h2 className="text-2xl font-bold text-center text-teal-700">
+                    Login / Signup
+                  </h2>
+                  <input
+                    type="tel"
+                    placeholder="Enter your phone number"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    className="w-full border border-gray-300 font-semibold rounded-lg px-4 py-3 text-lg focus:ring-2 focus:ring-teal-500 outline-none"
+                  />
+                  <button
+                    onClick={handleSendOtp}
+                    className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3 rounded-lg text-lg font-semibold duration-200 cursor-pointer"
+                  >
+                    Send OTP
+                  </button>
+                </div>
+              )}
+
+              {step === "otp" && (
+                <div className="space-y-5 text-center">
+                  <h2 className="text-2xl font-bold text-teal-700">
+                    Enter OTP
+                  </h2>
+                  <p className="text-gray-500">Sent to +91 {phoneNumber}</p>
+                  <OtpInput otp={otp} setOtp={setOtp} />
+                  <button
+                    onClick={handleVerifyOtp}
+                    className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3 rounded-lg text-lg font-semibold cursor-pointer duration-300"
+                  >
+                    Verify OTP
+                  </button>
+                  <p
+                    onClick={() => setStep("phone")}
+                    className="text-lg text-black cursor-pointer rounded-lg hover:bg-teal-200 bg-teal-100 py-4 px-7 duration-500"
+                  >
+                    Change number
+                  </p>
+                </div>
+              )}
+            </>
+          )}
+        </motion.div>
+
+        {/* Separate popup for role selection */}
+        <AnimatePresence>
+          {showRolePopup && <ShopOwnerPopup onSelect={handleRoleSelection} />}
+        </AnimatePresence>
+      </motion.div>
+    </AnimatePresence>
+  );
+};
+
+export default PhoneAuthModal;

@@ -1,0 +1,105 @@
+import React, { useContext } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { UserContext } from "../../context/UserContext";
+import CartItem from "../../components/Cart/CartItem";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+
+const CartPage = () => {
+  const {
+    cart,
+    removeFromCart,
+    clearCartItems,
+    cartSubtotal,
+    totalItems,
+    requireLogin,
+  } = useContext(UserContext);
+  const navigate = useNavigate();
+
+  const handleProceedToPay = () => {
+    requireLogin(() => {
+      // this runs only if logged in
+      toast.success("Proceeding to checkout...");
+      navigate("/checkout");
+    });
+  };
+
+  return (
+    <div className="min-h-screen bg-teal-50 dark:bg-slate-900 transition-colors duration-300 py-8 px-4">
+      <div className="max-w-7xl mx-auto">
+        <div className="mb-6 flex items-center justify-between">
+          <h1 className="text-4xl font-bold dark:text-gray-100">My Cart</h1>
+          <div className="text-gray-600 dark:text-gray-400">
+            Items: <span className="font-semibold">{totalItems}</span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div>
+            <AnimatePresence>
+              {cart.length === 0 ? (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="p-20 bg-white dark:bg-slate-800 hover:shadow-2xl duration-400 rounded-2xl mt-50 shadow-sm text-center transition-colors duration-300"
+                >
+                  <p className="text-2xl text-gray-600 dark:text-gray-300 mb-4">
+                    Oops !! Your cart is empty.
+                  </p>
+                  <button
+                    onClick={() => navigate("/products")}
+                    className="bg-teal-600 text-xl mt-8 hover:bg-teal-800 cursor-pointer duration-400 text-white px-6 py-5 rounded-lg"
+                  >
+                    Browse Products
+                  </button>
+                </motion.div>
+              ) : (
+                cart.map((it) => (
+                  <motion.div
+                    key={it.productId}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8, scale: 0.98 }}
+                    transition={{ duration: 0.18 }}
+                    className="mb-4"
+                  >
+                    <CartItem
+                      item={it}
+                      onQtyChange={(qty) => setCartQty(it.productId, qty)}
+                      onRemove={() => removeFromCart(it.productId)}
+                    />
+                  </motion.div>
+                ))
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Right column: summary */}
+          <aside className="bg-white dark:bg-slate-800 p-10 rounded-2xl mt-50 hover:shadow-2xl duration-400 h-fit transition-colors duration-300">
+            <h3 className="text-xl font-semibold mb-4 dark:text-gray-100">Order Summary</h3>
+            <div className="flex justify-between my-2 dark:text-gray-300">
+              <span>Subtotal</span>
+              <span className="font-semibold">₹{cartSubtotal}</span>
+            </div>
+            <div className="border-t dark:border-slate-700 mt-4 pt-4 space-y-3">
+              <button
+                className="w-full bg-teal-600 cursor-pointer text-xl hover:bg-teal-800 duration-400 py-5 rounded-lg text-white font-semibold"
+                onClick={handleProceedToPay}
+              >
+                Proceed to Checkout
+              </button>
+              <button
+                onClick={() => clearCartItems()}
+                className="w-full border text-xl border-gray-300 dark:border-slate-600 py-5 rounded-lg cursor-pointer text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700 duration-400 transition-colors"
+              >
+                Clear Cart
+              </button>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default CartPage;

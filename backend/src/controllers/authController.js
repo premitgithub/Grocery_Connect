@@ -1,46 +1,155 @@
-import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
-// ✅ Signup Controller
-export const signup = async (req, res) => {
+const otpStore = {}; // temporary in-memory store
+
+// ✅ SEND OTP
+export const sendOtp = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { phoneNumber } = req.body;
+    if (!phoneNumber) return res.status(400).json({ message: "Phone number required" });
 
-    if (!name || !email || !password)
-      return res.status(400).json({ message: "All fields are required" });
+    // generate 6-digit otp
+    const otp = Math.floor(100000 + Math.random() * 900000);
 
-    const existingUser = await User.findOne({ email });
-    if (existingUser)
-      return res.status(400).json({ message: "User already exists" });
+    // store otp with expiry
+    otpStore[phoneNumber] = {
+      otp,
+      expiresAt: Date.now() + 2 * 60 * 1000, // 2 minutes expiry
+    };
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    console.log(`OTP for ${phoneNumber}: ${otp}`); // For testing, remove later
 
-    const newUser = new User({ name, email, password: hashedPassword });
-    await newUser.save();
-
-    res.status(201).json({ message: "✅ User created successfully" });
+    return res.json({ message: "OTP sent successfully", otp });
   } catch (err) {
-    console.error("Signup Error:", err);
-    res.status(500).json({ message: "Server Error" });
+    console.error("Send OTP Error:", err);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-// ✅ Login Controller
-export const login = async (req, res) => {
+// ✅ VERIFY OTP
+export const verifyOtp = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { phoneNumber, otp } = req.body;
 
-    const user = await User.findOne({ email });
-    if (!user)
-      return res.status(404).json({ message: "User not found" });
+    const record = otpStore[phoneNumber];
+    if (!record)
+      return res.status(400).json({ message: "No OTP found. Please resend." });
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
-      return res.status(401).json({ message: "Invalid credentials" });
+    if (Date.now() > record.expiresAt)
+      return res.status(400).json({ message: "OTP expired. Please resend." });
 
-    res.json({ message: "✅ Login successful", user });
+    if (record.otp != otp)
+      return res.status(400).json({ message: "Invalid OTP" });
+
+    // ✅ Find or create user
+    let user = await User.findOne({ phoneNumber });
+    let isNewUser = false;
+    if (!user) {
+      user = await User.create({ phoneNumber, verified: true });
+      isNewUser = true;
+    } else {
+      user.verified = true;
+      await user.save();
+    }
+
+    delete otpStore[phoneNumber];
+
+    // ✅ Generate JWT token
+    const token = jwt.sign(
+      { id: user._id, phoneNumber: user.phoneNumber },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES || "7d" }
+    );
+
+    res.json({ message: "Login successful", token, user, isNewUser });
   } catch (err) {
-    console.error("Login Error:", err);
-    res.status(500).json({ message: "Server Error" });
+    console.error("Verify OTP Error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// ✅ SET USER ROLE
+export const setUserRole = async (req, res) => {
+  try {
+    const { phoneNumber, role } = req.body;
+
+    if (!phoneNumber) {
+      return res.status(400).json({ message: "Phone number required" });
+    }
+
+    const isShopOwner = role === "Shop Owner";
+
+    const user = await User.findOneAndUpdate(
+      { phoneNumber },
+      { role, isShopOwner },
+      { new: true } // return updated document
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ message: "User role updated successfully", user });
+  } catch (err) {
+    console.error("Set Role Error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// ✅ UPDATE USER PROFILE
+export const updateProfile = async (req, res) => {
+  try {
+    const { phoneNumber, name, email, altPhone } = req.body;
+
+    if (!phoneNumber) {
+      return res.status(400).json({ message: "Phone number required" });
+    }
+
+    const user = await User.findOneAndUpdate(
+      { phoneNumber },
+      { name, email, altPhone },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ message: "Profile updated successfully", user });
+  } catch (err) {
+    console.error("Update Profile Error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// ✅ UPDATE ONLINE STATUS (For Delivery Partners)
+export const updateOnlineStatus = async (req, res) => {
+  try {
+    const { userId, isOnline, location } = req.body;
+
+    if (!userId) {
+      return res.status(400).json({ message: "User ID required" });
+    }
+
+    const updateData = { isOnline };
+    if (location && location.lat && location.lng) {
+      updateData.location = location;
+    }
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      updateData,
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ message: "Online status updated", user });
+  } catch (err) {
+    console.error("Update Status Error:", err);
+    res.status(500).json({ message: "Server error" });
   }
 };
